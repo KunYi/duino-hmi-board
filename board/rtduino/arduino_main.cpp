@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 
+#if 0
 void setup(void)
 {
     /* put your setup code here, to run once: */
@@ -22,3 +23,4 @@ void loop(void)
     Serial.println("Hello Arduino!");
     delay(800);
 }
+#endif
