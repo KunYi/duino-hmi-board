@@ -2,12 +2,12 @@
  {
   "name": "LVGL",
   "path": "/packages/multimedia/LVGL/LVGL",
-  "ver": "v8.3.9"
+  "ver": "v8.3.11"
  },
  {
   "name": "LV_MUSIC_DEMO",
   "path": "/packages/multimedia/LVGL/lv_music_demo",
-  "ver": "v0.3.3"
+  "ver": "v0.3.4"
  },
  {
   "name": "PERF_COUNTER",
