@@ -34,6 +34,7 @@
 
 void setup()
 {
+    #if 0
     HAL::HAL_Init();
     // lv_init();
     // lv_port_init();
@@ -42,13 +43,17 @@ void setup()
 
     HAL::Power_SetEventCallback(App_Uninit);
     HAL::Memory_DumpInfo();
+    #endif
 }
 
 void loop()
 {
+    #if 0
     HAL::HAL_Update();
     // lv_task_handler();
     // __wfi();
+    #endif
+    delay(1000);
 }
 
 #endif
