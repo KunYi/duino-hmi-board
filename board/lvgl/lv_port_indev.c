@@ -76,17 +76,22 @@ rt_err_t gt911_probe(rt_uint16_t x, rt_uint16_t y)
         return -1;
     }
 
+    // set GT911 ranage
     id = rt_malloc(sizeof(rt_uint8_t) * 8);
     rt_device_control(touch_dev, RT_TOUCH_CTRL_GET_ID, id);
     rt_uint8_t *read_id = (rt_uint8_t *)id;
+    #if 0
     rt_kprintf("id = GT%d%d%d \n", read_id[0] - '0', read_id[1] - '0', read_id[2] - '0');
-
+    #endif
     rt_device_control(touch_dev, RT_TOUCH_CTRL_SET_X_RANGE, &x);  /* if possible you can set your x y coordinate*/
     rt_device_control(touch_dev, RT_TOUCH_CTRL_SET_Y_RANGE, &y);
+    #if 0
+    /* read GT911 setting info */
     rt_device_control(touch_dev, RT_TOUCH_CTRL_GET_INFO, id);
     rt_kprintf("range_x = %d \n", (*(struct rt_touch_info *)id).range_x);
     rt_kprintf("range_y = %d \n", (*(struct rt_touch_info *)id).range_y);
     rt_kprintf("point_num = %d \n", (*(struct rt_touch_info *)id).point_num);
+    #endif
     rt_free(id);
 
     rt_device_set_rx_indicate(touch_dev, rx_callback);
