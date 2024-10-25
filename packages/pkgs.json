@@ -1,0 +1,22 @@
+[
+ {
+  "name": "LVGL",
+  "path": "/packages/multimedia/LVGL/LVGL",
+  "ver": "v8.3.9"
+ },
+ {
+  "name": "LV_MUSIC_DEMO",
+  "path": "/packages/multimedia/LVGL/lv_music_demo",
+  "ver": "v0.3.3"
+ },
+ {
+  "name": "PERF_COUNTER",
+  "path": "/packages/system/perf_counter",
+  "ver": "v2.2.4.1"
+ },
+ {
+  "name": "RTDUINO",
+  "path": "/packages/arduino/RTduino",
+  "ver": "latest"
+ }
+]
