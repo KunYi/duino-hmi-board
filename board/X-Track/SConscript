@@ -5,10 +5,7 @@ objs = []
 cwd  = GetCurrentDir()
 list = os.listdir(cwd)
 CPPPATH = [cwd]
-src = Glob('*.c')
-src += Glob('*.cpp')
-
-path =path  = [cwd + '.']
+src = [ 'main.cpp' ]
 
 objs = DefineGroup('X-Track', src, depend = [''], CPPPATH = CPPPATH)
 

@@ -1,0 +1,26 @@
+import os
+from building import *
+
+objs = []
+cwd  = GetCurrentDir()
+list = os.listdir(cwd)
+CPPPATH = []
+
+src = Glob('*.cpp')
+src += Glob('Common/DataProc/*.cpp')
+
+path = [
+    cwd,
+    cwd + 'Common/DataProc',
+    cwd + 'Common/HAL',
+    cwd + 'Common/Music',
+    cwd + 'Config',
+    ]
+
+objs = DefineGroup('X-Track-App', src, depend = [''], CPPPATH = path)
+
+for item in list:
+    if os.path.isfile(os.path.join(cwd, item, 'SConscript')):
+        objs = objs + SConscript(os.path.join(item, 'SConscript'))
+
+Return('objs')
