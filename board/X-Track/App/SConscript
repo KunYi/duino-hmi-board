@@ -6,21 +6,75 @@ cwd  = GetCurrentDir()
 list = os.listdir(cwd)
 CPPPATH = []
 
-src = Glob('*.cpp')
+src = ['App.cpp']
 src += Glob('Common/DataProc/*.cpp')
+src += Glob('Pages/*.cpp')
+src += Glob('Pages/Dialplate/*.cpp')
+src += Glob('Pages/LiveMap/*.cpp')
+src += Glob('Pages/StartUp/*.cpp')
+src += Glob('Pages/StatusBar/*.cpp')
+src += Glob('Pages/SystemInfos/*.cpp')
+src += Glob('Resource/*.cpp')
+src += Glob('Resource/Font/*.c')
+src += Glob('Resource/Image/*.c')
+src += Glob('Utils/DataCenter/*.cpp')
+src += Glob('Utils/DataCenter/PingPongBuffer/*.c')
+src += Glob('Utils/MapConv/*.cpp')
+src += Glob('Utils/MapConv/GPS_Transform/*.cpp')
+src += Glob('Utils/MapConv/TileSystem/*.cpp')
+src += Glob('Utils/ResourceManager/*.cpp')
+src += Glob('Utils/StorageService/*.cpp')
+src += Glob('Utils/TrackFilter/*.cpp')
 
 path = [
     cwd,
-    cwd + 'Common/DataProc',
-    cwd + 'Common/HAL',
-    cwd + 'Common/Music',
-    cwd + 'Config',
-    ]
+    cwd + '/Common/DataProc',
+    cwd + '/Common/HAL',
+    cwd + '/Common/Music',
+    cwd + '/Config',
+    cwd + '/Pages',
+    cwd + '/Pages/Dialplate',
+    cwd + '/Pages/LiveMap',
+    cwd + '/Pages/StartUp',
+    cwd + '/Pages/StatusBar',
+    cwd + '/Pages/SystemInfos',
+    cwd + '/Resource',
+    cwd + '/Utils/ArduinoJson/src',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Array',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Collection',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Deserialization',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Deserialization/Readers',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Document',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Json',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Memory',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Misc',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/MsgPack',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Numbers',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Object',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Polyfills',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Serialization',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Strings',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/StringStorage',
+    cwd + '/Utils/ArduinoJson/src/ArduinoJson/Variant',
+    cwd + '/Utils/DataCenter',
+    cwd + '/Utils/DataCenter/PingPongBuffer',
+    cwd + '/Utils/Filters',
+    cwd + '/Utils/MapConv',
+    cwd + '/Utils/MapConv/GPS_Transform',
+    cwd + '/Utils/MapConv/TileSystem',
+    cwd + '/Utils/ResourceManager',
+    cwd + '/Utils/StorageService',
+    cwd + '/Utils/TrackFilter',
+]
 
-objs = DefineGroup('X-Track-App', src, depend = [''], CPPPATH = path)
+objs = DefineGroup('', src, depend = [''], CPPPATH = path)
+
+exclude_dirs = ['lvgl']
 
 for item in list:
-    if os.path.isfile(os.path.join(cwd, item, 'SConscript')):
-        objs = objs + SConscript(os.path.join(item, 'SConscript'))
+    if item not in exclude_dirs:
+        if os.path.isfile(os.path.join(cwd, item, 'SConscript')):
+            objs = objs + SConscript(os.path.join(item, 'SConscript'))
 
 Return('objs')
