@@ -56,10 +56,10 @@
  *-----------*/
 
 #define LV_SPRINTF_CUSTOM 1
-#define LV_SPRINTF_INCLUDE LV_RTTHREAD_INCLUDE
-#define lv_snprintf  rt_snprintf
-#define lv_vsnprintf rt_vsnprintf
-#define LV_SPRINTF_USE_FLOAT 0
+#define LV_SPRINTF_INCLUDE <stdio.h>
+#define lv_snprintf  snprintf
+#define lv_vsnprintf vsnprintf
+#define LV_SPRINTF_USE_FLOAT 1
 
 /*=====================
  *  COMPILER SETTINGS
