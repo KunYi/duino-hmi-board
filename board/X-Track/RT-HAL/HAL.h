@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  * Copyright (c) 2021 _VIFEXTech
  *
@@ -20,53 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "Arduino.h"
-#include "App/App.h"
-#include "HAL/HAL.h"
-// #include "lvgl/lvgl.h"
-// #include "lv_port/lv_port.h"
+#ifndef __HAL_SIM_H
+#define __HAL_SIM_H
 
-#if LV_USE_DEMO_BENCHMARK
-
-#include "benchmark.inc"
-
-#else
-
-void setup()
-{
-    #if 0
-    HAL::HAL_Init();
-    // lv_init();
-    // lv_port_init();
-
-    App_Init();
-
-    HAL::Power_SetEventCallback(App_Uninit);
-    HAL::Memory_DumpInfo();
-    #endif
-    App_Init();
-}
-
-void loop()
-{
-    #if 0
-    HAL::HAL_Update();
-    // lv_task_handler();
-    // __wfi();
-    #endif
-    delay(1000);
-}
+#include "Common/HAL/HAL.h"
 
 #endif
-
-// /**
-//   * @brief  Main Function
-//   * @param  None
-//   * @retval None
-//   */
-// int main(void)
-// {
-//     Core_Init();
-//     setup();
-//     for(;;)loop();
-// }
