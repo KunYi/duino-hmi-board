@@ -5,11 +5,6 @@
   "ver": "v8.3.11"
  },
  {
-  "name": "LV_MUSIC_DEMO",
-  "path": "/packages/multimedia/LVGL/lv_music_demo",
-  "ver": "v0.3.4"
- },
- {
   "name": "PERF_COUNTER",
   "path": "/packages/system/perf_counter",
   "ver": "v2.2.4.1"
