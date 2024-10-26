@@ -32,19 +32,21 @@
 
 #else
 
+#ifdef __RTTHREAD__
 extern "C" void lv_user_gui_init(void) {
     HAL::HAL_Init();
     App_Init();
     HAL::Power_SetEventCallback(App_Uninit);
     // HAL::Memory_DumpInfo();
 }
+#endif
 
 void setup()
 {
-    #if 0
+    #ifndef __RTTHREAD__
     HAL::HAL_Init();
-    // lv_init();
-    // lv_port_init();
+    lv_init();
+    lv_port_init();
 
     App_Init();
 
@@ -55,12 +57,14 @@ void setup()
 
 void loop()
 {
-    #if 0
+#ifndef __RTTHREAD__
     HAL::HAL_Update();
-    // lv_task_handler();
-    // __wfi();
-    #endif
-    delay(1000);
+    lv_task_handler();
+    __wfi();
+#else
+    HAL::HAL_Update();
+    delay(50);
+#endif
 }
 
 #endif
