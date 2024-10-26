@@ -407,8 +407,6 @@
 #define BSP_USING_LVGL
 #define BSP_USING_LCD_RGB
 #define BSP_USING_TOUCH
-#define BSP_USING_LVGL_DEMO
-#define BSP_USING_LVGL_MUSIC_DEMO
 /* end of On-chip Peripheral Drivers */
 
 /* Board extended module Drivers */

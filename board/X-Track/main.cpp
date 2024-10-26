@@ -32,6 +32,13 @@
 
 #else
 
+extern "C" void lv_user_gui_init(void) {
+    HAL::HAL_Init();
+    App_Init();
+    HAL::Power_SetEventCallback(App_Uninit);
+    // HAL::Memory_DumpInfo();
+}
+
 void setup()
 {
     #if 0
@@ -44,7 +51,6 @@ void setup()
     HAL::Power_SetEventCallback(App_Uninit);
     HAL::Memory_DumpInfo();
     #endif
-    App_Init();
 }
 
 void loop()
