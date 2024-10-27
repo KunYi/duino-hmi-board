@@ -39,15 +39,13 @@
             [32] = r_icu_isr, /* ICU IRQ11 (External pin interrupt 11) */
             [33] = r_icu_isr, /* ICU IRQ13 (External pin interrupt 13) */
             [34] = r_icu_isr, /* ICU IRQ9 (External pin interrupt 9) */
-            [35] = sci_spi_rxi_isr, /* SCI4 RXI (Receive data full) */
-            [36] = sci_spi_txi_isr, /* SCI4 TXI (Transmit data empty) */
-            [37] = sci_spi_tei_isr, /* SCI4 TEI (Transmit end) */
-            [38] = sci_spi_eri_isr, /* SCI4 ERI (Receive error) */
-            [39] = ether_eint_isr, /* EDMAC0 EINT (EDMAC 0 interrupt) */
-            [40] = rtc_alarm_periodic_isr, /* RTC ALARM (Alarm interrupt) */
-            [41] = rtc_carry_isr, /* RTC CARRY (Carry interrupt) */
-            [42] = usbfs_interrupt_handler, /* USBFS INT (USBFS interrupt) */
-            [43] = usbfs_resume_handler, /* USBFS RESUME (USBFS resume interrupt) */
+            [35] = ether_eint_isr, /* EDMAC0 EINT (EDMAC 0 interrupt) */
+            [36] = rtc_alarm_periodic_isr, /* RTC ALARM (Alarm interrupt) */
+            [37] = rtc_carry_isr, /* RTC CARRY (Carry interrupt) */
+            [38] = sci_uart_rxi_isr, /* SCI4 RXI (Receive data full) */
+            [39] = sci_uart_txi_isr, /* SCI4 TXI (Transmit data empty) */
+            [40] = sci_uart_tei_isr, /* SCI4 TEI (Transmit end) */
+            [41] = sci_uart_eri_isr, /* SCI4 ERI (Receive error) */
         };
         #if BSP_FEATURE_ICU_HAS_IELSR
         const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_MAX_ENTRIES] =
@@ -87,15 +85,13 @@
             [32] = BSP_PRV_VECT_ENUM(EVENT_ICU_IRQ11,FIXED), /* ICU IRQ11 (External pin interrupt 11) */
             [33] = BSP_PRV_VECT_ENUM(EVENT_ICU_IRQ13,FIXED), /* ICU IRQ13 (External pin interrupt 13) */
             [34] = BSP_PRV_VECT_ENUM(EVENT_ICU_IRQ9,FIXED), /* ICU IRQ9 (External pin interrupt 9) */
-            [35] = BSP_PRV_VECT_ENUM(EVENT_SCI4_RXI,FIXED), /* SCI4 RXI (Receive data full) */
-            [36] = BSP_PRV_VECT_ENUM(EVENT_SCI4_TXI,FIXED), /* SCI4 TXI (Transmit data empty) */
-            [37] = BSP_PRV_VECT_ENUM(EVENT_SCI4_TEI,FIXED), /* SCI4 TEI (Transmit end) */
-            [38] = BSP_PRV_VECT_ENUM(EVENT_SCI4_ERI,FIXED), /* SCI4 ERI (Receive error) */
-            [39] = BSP_PRV_VECT_ENUM(EVENT_EDMAC0_EINT,FIXED), /* EDMAC0 EINT (EDMAC 0 interrupt) */
-            [40] = BSP_PRV_VECT_ENUM(EVENT_RTC_ALARM,FIXED), /* RTC ALARM (Alarm interrupt) */
-            [41] = BSP_PRV_VECT_ENUM(EVENT_RTC_CARRY,FIXED), /* RTC CARRY (Carry interrupt) */
-            [42] = BSP_PRV_VECT_ENUM(EVENT_USBFS_INT,FIXED), /* USBFS INT (USBFS interrupt) */
-            [43] = BSP_PRV_VECT_ENUM(EVENT_USBFS_RESUME,FIXED), /* USBFS RESUME (USBFS resume interrupt) */
+            [35] = BSP_PRV_VECT_ENUM(EVENT_EDMAC0_EINT,FIXED), /* EDMAC0 EINT (EDMAC 0 interrupt) */
+            [36] = BSP_PRV_VECT_ENUM(EVENT_RTC_ALARM,FIXED), /* RTC ALARM (Alarm interrupt) */
+            [37] = BSP_PRV_VECT_ENUM(EVENT_RTC_CARRY,FIXED), /* RTC CARRY (Carry interrupt) */
+            [38] = BSP_PRV_VECT_ENUM(EVENT_SCI4_RXI,FIXED), /* SCI4 RXI (Receive data full) */
+            [39] = BSP_PRV_VECT_ENUM(EVENT_SCI4_TXI,FIXED), /* SCI4 TXI (Transmit data empty) */
+            [40] = BSP_PRV_VECT_ENUM(EVENT_SCI4_TEI,FIXED), /* SCI4 TEI (Transmit end) */
+            [41] = BSP_PRV_VECT_ENUM(EVENT_SCI4_ERI,FIXED), /* SCI4 ERI (Receive error) */
         };
         #endif
         #endif

@@ -6,7 +6,7 @@
         #endif
 /* Number of interrupts allocated */
 #ifndef VECTOR_DATA_IRQ_COUNT
-#define VECTOR_DATA_IRQ_COUNT    (44)
+#define VECTOR_DATA_IRQ_COUNT    (42)
 #endif
 /* ISR prototypes */
 void sci_uart_rxi_isr(void);
@@ -34,8 +34,6 @@ void r_icu_isr(void);
 void ether_eint_isr(void);
 void rtc_alarm_periodic_isr(void);
 void rtc_carry_isr(void);
-void usbfs_interrupt_handler(void);
-void usbfs_resume_handler(void);
 
 /* Vector table allocations */
 #define VECTOR_NUMBER_SCI9_RXI ((IRQn_Type) 0) /* SCI9 RXI (Receive data full) */
@@ -108,24 +106,20 @@ void usbfs_resume_handler(void);
 #define ICU_IRQ13_IRQn          ((IRQn_Type) 33) /* ICU IRQ13 (External pin interrupt 13) */
 #define VECTOR_NUMBER_ICU_IRQ9 ((IRQn_Type) 34) /* ICU IRQ9 (External pin interrupt 9) */
 #define ICU_IRQ9_IRQn          ((IRQn_Type) 34) /* ICU IRQ9 (External pin interrupt 9) */
-#define VECTOR_NUMBER_SCI4_RXI ((IRQn_Type) 35) /* SCI4 RXI (Receive data full) */
-#define SCI4_RXI_IRQn          ((IRQn_Type) 35) /* SCI4 RXI (Receive data full) */
-#define VECTOR_NUMBER_SCI4_TXI ((IRQn_Type) 36) /* SCI4 TXI (Transmit data empty) */
-#define SCI4_TXI_IRQn          ((IRQn_Type) 36) /* SCI4 TXI (Transmit data empty) */
-#define VECTOR_NUMBER_SCI4_TEI ((IRQn_Type) 37) /* SCI4 TEI (Transmit end) */
-#define SCI4_TEI_IRQn          ((IRQn_Type) 37) /* SCI4 TEI (Transmit end) */
-#define VECTOR_NUMBER_SCI4_ERI ((IRQn_Type) 38) /* SCI4 ERI (Receive error) */
-#define SCI4_ERI_IRQn          ((IRQn_Type) 38) /* SCI4 ERI (Receive error) */
-#define VECTOR_NUMBER_EDMAC0_EINT ((IRQn_Type) 39) /* EDMAC0 EINT (EDMAC 0 interrupt) */
-#define EDMAC0_EINT_IRQn          ((IRQn_Type) 39) /* EDMAC0 EINT (EDMAC 0 interrupt) */
-#define VECTOR_NUMBER_RTC_ALARM ((IRQn_Type) 40) /* RTC ALARM (Alarm interrupt) */
-#define RTC_ALARM_IRQn          ((IRQn_Type) 40) /* RTC ALARM (Alarm interrupt) */
-#define VECTOR_NUMBER_RTC_CARRY ((IRQn_Type) 41) /* RTC CARRY (Carry interrupt) */
-#define RTC_CARRY_IRQn          ((IRQn_Type) 41) /* RTC CARRY (Carry interrupt) */
-#define VECTOR_NUMBER_USBFS_INT ((IRQn_Type) 42) /* USBFS INT (USBFS interrupt) */
-#define USBFS_INT_IRQn          ((IRQn_Type) 42) /* USBFS INT (USBFS interrupt) */
-#define VECTOR_NUMBER_USBFS_RESUME ((IRQn_Type) 43) /* USBFS RESUME (USBFS resume interrupt) */
-#define USBFS_RESUME_IRQn          ((IRQn_Type) 43) /* USBFS RESUME (USBFS resume interrupt) */
+#define VECTOR_NUMBER_EDMAC0_EINT ((IRQn_Type) 35) /* EDMAC0 EINT (EDMAC 0 interrupt) */
+#define EDMAC0_EINT_IRQn          ((IRQn_Type) 35) /* EDMAC0 EINT (EDMAC 0 interrupt) */
+#define VECTOR_NUMBER_RTC_ALARM ((IRQn_Type) 36) /* RTC ALARM (Alarm interrupt) */
+#define RTC_ALARM_IRQn          ((IRQn_Type) 36) /* RTC ALARM (Alarm interrupt) */
+#define VECTOR_NUMBER_RTC_CARRY ((IRQn_Type) 37) /* RTC CARRY (Carry interrupt) */
+#define RTC_CARRY_IRQn          ((IRQn_Type) 37) /* RTC CARRY (Carry interrupt) */
+#define VECTOR_NUMBER_SCI4_RXI ((IRQn_Type) 38) /* SCI4 RXI (Receive data full) */
+#define SCI4_RXI_IRQn          ((IRQn_Type) 38) /* SCI4 RXI (Receive data full) */
+#define VECTOR_NUMBER_SCI4_TXI ((IRQn_Type) 39) /* SCI4 TXI (Transmit data empty) */
+#define SCI4_TXI_IRQn          ((IRQn_Type) 39) /* SCI4 TXI (Transmit data empty) */
+#define VECTOR_NUMBER_SCI4_TEI ((IRQn_Type) 40) /* SCI4 TEI (Transmit end) */
+#define SCI4_TEI_IRQn          ((IRQn_Type) 40) /* SCI4 TEI (Transmit end) */
+#define VECTOR_NUMBER_SCI4_ERI ((IRQn_Type) 41) /* SCI4 ERI (Receive error) */
+#define SCI4_ERI_IRQn          ((IRQn_Type) 41) /* SCI4 ERI (Receive error) */
 #ifdef __cplusplus
         }
         #endif

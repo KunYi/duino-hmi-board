@@ -4,10 +4,8 @@
 #include <stdint.h>
 #include "bsp_api.h"
 #include "common_data.h"
-#include "r_usb_basic.h"
-#include "r_usb_basic_api.h"
-#include "r_usb_hhid_api.h"
-#include "r_usb_hhid.h"
+#include "r_sci_uart.h"
+#include "r_uart_api.h"
 #include "r_rtc.h"
 #include "r_rtc_api.h"
 #include "r_ether_phy.h"
@@ -29,32 +27,18 @@
 #include "r_transfer_api.h"
 #include "r_sdhi.h"
 #include "r_sdmmc_api.h"
-#include "r_sci_uart.h"
-#include "r_uart_api.h"
 FSP_HEADER
-/* Basic on USB Instance. */
-extern const usb_instance_t g_basic0;
+/** UART on SCI Instance. */
+extern const uart_instance_t g_uart4;
 
-/** Access the USB instance using these structures when calling API functions directly (::p_api is not used). */
-extern usb_instance_ctrl_t g_basic0_ctrl;
-extern const usb_cfg_t g_basic0_cfg;
+/** Access the UART instance using these structures when calling API functions directly (::p_api is not used). */
+extern sci_uart_instance_ctrl_t g_uart4_ctrl;
+extern const uart_cfg_t g_uart4_cfg;
+extern const sci_uart_extended_cfg_t g_uart4_cfg_extend;
 
 #ifndef NULL
-void NULL(void*);
+void NULL(uart_callback_args_t *p_args);
 #endif
-
-#if 0 == BSP_CFG_RTOS
-#ifndef NULL
-void NULL(usb_callback_args_t*);
-#endif
-#endif
-
-#if 2 == BSP_CFG_RTOS
-#ifndef NULL
-void NULL(usb_event_info_t *, usb_hdl_t, usb_onoff_t);
-#endif
-#endif
-/** HID Driver on USB Instance. */
 /* RTC Instance. */
 extern const rtc_instance_t g_rtc;
 
@@ -99,29 +83,6 @@ extern const ether_cfg_t g_ether0_cfg;
 
 #ifndef user_ether0_callback
 void user_ether0_callback(ether_callback_args_t *p_args);
-#endif
-/* Transfer on DTC Instance. */
-extern const transfer_instance_t g_transfer8;
-
-/** Access the DTC instance using these structures when calling API functions directly (::p_api is not used). */
-extern dtc_instance_ctrl_t g_transfer8_ctrl;
-extern const transfer_cfg_t g_transfer8_cfg;
-/* Transfer on DTC Instance. */
-extern const transfer_instance_t g_transfer7;
-
-/** Access the DTC instance using these structures when calling API functions directly (::p_api is not used). */
-extern dtc_instance_ctrl_t g_transfer7_ctrl;
-extern const transfer_cfg_t g_transfer7_cfg;
-/** SPI on SCI Instance. */
-extern const spi_instance_t g_sci_spi4;
-
-/** Access the SCI_SPI instance using these structures when calling API functions directly (::p_api is not used). */
-extern sci_spi_instance_ctrl_t g_sci_spi4_ctrl;
-extern const spi_cfg_t g_sci_spi4_cfg;
-
-/** Called by the driver when a transfer has completed or an error has occurred (Must be implemented by the user). */
-#ifndef sci_spi4_callback
-void sci_spi4_callback(spi_callback_args_t *p_args);
 #endif
 /* Transfer on DTC Instance. */
 extern const transfer_instance_t g_transfer6;

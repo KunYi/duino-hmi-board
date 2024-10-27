@@ -65,10 +65,13 @@ BSP_SECTION_FLASH_GAP void Reset_Handler (void)
 
     /* Call user application. */
 #ifdef __ARMCC_VERSION
-    main();
+    main();     // to call rt-thread, defined in rt-thread/src/components.c
+#elif defined(__ICCARM__)
+    extern int __low_level_init(void)
+    __low_level_init(); // to call rt-thread, defined in rt-thread/src/components.c
 #elif defined(__GNUC__)
     extern int entry(void);
-    entry();
+    entry();    // to call rt-thread, defined in rt-thread/src/components.c
 #endif
 
     while (1)

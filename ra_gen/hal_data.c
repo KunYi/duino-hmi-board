@@ -1,66 +1,78 @@
 /* generated HAL source file - do not edit */
 #include "hal_data.h"
 
-usb_instance_ctrl_t g_basic0_ctrl;
+sci_uart_instance_ctrl_t g_uart4_ctrl;
 
-#if !defined(NULL)
-extern usb_descriptor_t NULL;
+baud_setting_t g_uart4_baud_setting =
+        {
+        /* Baud rate calculated with 0.160% error. */.semr_baudrate_bits_b.abcse = 0,
+          .semr_baudrate_bits_b.abcs = 0, .semr_baudrate_bits_b.bgdm = 1, .cks = 0, .brr = 64, .mddr = (uint8_t) 256, .semr_baudrate_bits_b.brme =
+                  false };
+
+/** UART extended configuration for UARTonSCI HAL driver */
+const sci_uart_extended_cfg_t g_uart4_cfg_extend =
+{ .clock = SCI_UART_CLOCK_INT, .rx_edge_start = SCI_UART_START_BIT_FALLING_EDGE, .noise_cancel =
+          SCI_UART_NOISE_CANCELLATION_DISABLE,
+  .rx_fifo_trigger = SCI_UART_RX_FIFO_TRIGGER_MAX, .p_baud_setting = &g_uart4_baud_setting, .flow_control =
+          SCI_UART_FLOW_CONTROL_RTS,
+#if 0xFF != 0xFF
+                .flow_control_pin       = BSP_IO_PORT_FF_PIN_0xFF,
+                #else
+  .flow_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
 #endif
+  .rs485_setting =
+  { .enable = SCI_UART_RS485_DISABLE, .polarity = SCI_UART_RS485_DE_POLARITY_HIGH,
+#if 0xFF != 0xFF
+                    .de_control_pin = BSP_IO_PORT_FF_PIN_0xFF,
+                #else
+    .de_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+#endif
+          }, };
+
+/** UART interface configuration */
+const uart_cfg_t g_uart4_cfg =
+{ .channel = 4, .data_bits = UART_DATA_BITS_8, .parity = UART_PARITY_OFF, .stop_bits = UART_STOP_BITS_1, .p_callback =
+          NULL,
+  .p_context = NULL, .p_extend = &g_uart4_cfg_extend,
 #define RA_NOT_DEFINED (1)
-const usb_cfg_t g_basic0_cfg =
-{ .usb_mode = USB_MODE_HOST,
-  .usb_speed = USB_SPEED_FS,
-  .module_number = 0,
-  .type = USB_CLASS_HHID,
-#if defined(NULL)
-                .p_usb_reg = NULL,
+#if (RA_NOT_DEFINED == RA_NOT_DEFINED)
+  .p_transfer_tx = NULL,
 #else
-  .p_usb_reg = &NULL,
+                .p_transfer_tx       = &RA_NOT_DEFINED,
 #endif
-  .usb_complience_cb = NULL,
-#if defined(VECTOR_NUMBER_USBFS_INT)
-                .irq       = VECTOR_NUMBER_USBFS_INT,
+#if (RA_NOT_DEFINED == RA_NOT_DEFINED)
+  .p_transfer_rx = NULL,
 #else
-  .irq = FSP_INVALID_VECTOR,
+                .p_transfer_rx       = &RA_NOT_DEFINED,
 #endif
-#if defined(VECTOR_NUMBER_USBFS_RESUME)
-                .irq_r     = VECTOR_NUMBER_USBFS_RESUME,
+#undef RA_NOT_DEFINED
+  .rxi_ipl = (12),
+  .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12),
+#if defined(VECTOR_NUMBER_SCI4_RXI)
+                .rxi_irq             = VECTOR_NUMBER_SCI4_RXI,
 #else
-  .irq_r = FSP_INVALID_VECTOR,
+  .rxi_irq = FSP_INVALID_VECTOR,
 #endif
-  .irq_d0 = FSP_INVALID_VECTOR,
-  .irq_d1 = FSP_INVALID_VECTOR,
-#if defined(VECTOR_NUMBER_USBHS_USB_INT_RESUME)
-                .hsirq     = VECTOR_NUMBER_USBHS_USB_INT_RESUME,
+#if defined(VECTOR_NUMBER_SCI4_TXI)
+                .txi_irq             = VECTOR_NUMBER_SCI4_TXI,
 #else
-  .hsirq = FSP_INVALID_VECTOR,
+  .txi_irq = FSP_INVALID_VECTOR,
 #endif
-  .hsirq_d0 = FSP_INVALID_VECTOR,
-  .hsirq_d1 = FSP_INVALID_VECTOR,
-  .ipl = (12),
-  .ipl_r = (12),
-  .ipl_d0 = BSP_IRQ_DISABLED,
-  .ipl_d1 = BSP_IRQ_DISABLED,
-  .hsipl = (BSP_IRQ_DISABLED),
-  .hsipl_d0 = BSP_IRQ_DISABLED,
-  .hsipl_d1 = BSP_IRQ_DISABLED,
-#if (BSP_CFG_RTOS == 0) && defined(USB_CFG_HMSC_USE)
-                .p_usb_apl_callback = NULL,
+#if defined(VECTOR_NUMBER_SCI4_TEI)
+                .tei_irq             = VECTOR_NUMBER_SCI4_TEI,
 #else
-  .p_usb_apl_callback = NULL,
+  .tei_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(NULL)
-                .p_context = NULL,
+#if defined(VECTOR_NUMBER_SCI4_ERI)
+                .eri_irq             = VECTOR_NUMBER_SCI4_ERI,
 #else
-  .p_context = &NULL,
+  .eri_irq = FSP_INVALID_VECTOR,
 #endif
         };
-#undef RA_NOT_DEFINED
 
 /* Instance structure to use this module. */
-const usb_instance_t g_basic0 =
-{ .p_ctrl = &g_basic0_ctrl, .p_cfg = &g_basic0_cfg, .p_api = &g_usb_on_usb, };
-
+const uart_instance_t g_uart4 =
+{ .p_ctrl = &g_uart4_ctrl, .p_cfg = &g_uart4_cfg, .p_api = &g_uart_on_sci };
 rtc_instance_ctrl_t g_rtc_ctrl;
 const rtc_error_adjustment_cfg_t g_rtc_err_cfg =
 { .adjustment_mode = RTC_ERROR_ADJUSTMENT_MODE_AUTOMATIC,
@@ -155,119 +167,6 @@ const ether_cfg_t g_ether0_cfg =
 /* Instance structure to use this module. */
 const ether_instance_t g_ether0 =
 { .p_ctrl = &g_ether0_ctrl, .p_cfg = &g_ether0_cfg, .p_api = &g_ether_on_ether };
-dtc_instance_ctrl_t g_transfer8_ctrl;
-
-#if (1 == 1)
-transfer_info_t g_transfer8_info =
-{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
-  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_DESTINATION,
-  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
-  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
-  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED,
-  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
-  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
-  .p_dest = (void*) NULL,
-  .p_src = (void const*) NULL,
-  .num_blocks = 0,
-  .length = 0, };
-
-#elif (1 > 1)
-/* User is responsible to initialize the array. */
-transfer_info_t g_transfer8_info[1];
-#else
-/* User must call api::reconfigure before enable DTC transfer. */
-#endif
-
-const dtc_extended_cfg_t g_transfer8_cfg_extend =
-{ .activation_source = VECTOR_NUMBER_SCI4_RXI, };
-
-const transfer_cfg_t g_transfer8_cfg =
-{
-#if (1 == 1)
-  .p_info = &g_transfer8_info,
-#elif (1 > 1)
-    .p_info              = g_transfer8_info,
-#else
-    .p_info = NULL,
-#endif
-  .p_extend = &g_transfer8_cfg_extend, };
-
-/* Instance structure to use this module. */
-const transfer_instance_t g_transfer8 =
-{ .p_ctrl = &g_transfer8_ctrl, .p_cfg = &g_transfer8_cfg, .p_api = &g_transfer_on_dtc };
-dtc_instance_ctrl_t g_transfer7_ctrl;
-
-#if (1 == 1)
-transfer_info_t g_transfer7_info =
-{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
-  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_SOURCE,
-  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
-  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
-  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
-  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
-  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
-  .p_dest = (void*) NULL,
-  .p_src = (void const*) NULL,
-  .num_blocks = 0,
-  .length = 0, };
-
-#elif (1 > 1)
-/* User is responsible to initialize the array. */
-transfer_info_t g_transfer7_info[1];
-#else
-/* User must call api::reconfigure before enable DTC transfer. */
-#endif
-
-const dtc_extended_cfg_t g_transfer7_cfg_extend =
-{ .activation_source = VECTOR_NUMBER_SCI4_TXI, };
-
-const transfer_cfg_t g_transfer7_cfg =
-{
-#if (1 == 1)
-  .p_info = &g_transfer7_info,
-#elif (1 > 1)
-    .p_info              = g_transfer7_info,
-#else
-    .p_info = NULL,
-#endif
-  .p_extend = &g_transfer7_cfg_extend, };
-
-/* Instance structure to use this module. */
-const transfer_instance_t g_transfer7 =
-{ .p_ctrl = &g_transfer7_ctrl, .p_cfg = &g_transfer7_cfg, .p_api = &g_transfer_on_dtc };
-sci_spi_instance_ctrl_t g_sci_spi4_ctrl;
-
-/** SPI extended configuration */
-const sci_spi_extended_cfg_t g_sci_spi4_cfg_extend =
-{ .clk_div =
-{
-/* Actual calculated bitrate: 7968750. */.cks = 0,
-  .brr = 2, .mddr = 204, } };
-
-const spi_cfg_t g_sci_spi4_cfg =
-{ .channel = 4, .operating_mode = SPI_MODE_MASTER, .clk_phase = SPI_CLK_PHASE_EDGE_ODD, .clk_polarity =
-          SPI_CLK_POLARITY_LOW,
-  .mode_fault = SPI_MODE_FAULT_ERROR_DISABLE, .bit_order = SPI_BIT_ORDER_MSB_FIRST,
-#define RA_NOT_DEFINED (1)
-#if (RA_NOT_DEFINED == g_transfer7)
-    .p_transfer_tx   = NULL,
-#else
-  .p_transfer_tx = &g_transfer7,
-#endif
-#if (RA_NOT_DEFINED == g_transfer8)
-    .p_transfer_rx   = NULL,
-#else
-  .p_transfer_rx = &g_transfer8,
-#endif
-#undef RA_NOT_DEFINED
-  .p_callback = sci_spi4_callback,
-  .p_context = NULL, .rxi_irq = VECTOR_NUMBER_SCI4_RXI, .txi_irq = VECTOR_NUMBER_SCI4_TXI, .tei_irq =
-          VECTOR_NUMBER_SCI4_TEI,
-  .eri_irq = VECTOR_NUMBER_SCI4_ERI, .rxi_ipl = (12), .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12), .p_extend =
-          &g_sci_spi4_cfg_extend, };
-/* Instance structure to use this module. */
-const spi_instance_t g_sci_spi4 =
-{ .p_ctrl = &g_sci_spi4_ctrl, .p_cfg = &g_sci_spi4_cfg, .p_api = &g_spi_on_sci };
 dtc_instance_ctrl_t g_transfer6_ctrl;
 
 #if (1 == 1)
