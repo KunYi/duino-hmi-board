@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -915,7 +915,6 @@ void can_error_isr (void)
         p_reg->MCTL_RX_b[mailbox].MSGLOST = 0U; // Clear the error so that NMLST is not set again for an already handled error.
     }
 
-    args.p_frame   = NULL;
     args.channel   = p_ctrl->p_cfg->channel;
     args.p_context = p_ctrl->p_context;
     args.mailbox   = mailbox;
@@ -956,6 +955,8 @@ void can_rx_isr (void)
     can_callback_args_t args;
     uint32_t            mailbox;
 
+    args.event = CAN_EVENT_RX_COMPLETE;
+
     R_CAN0_Type * p_reg = p_ctrl->p_reg;
 
 #if CAN_CFG_FIFO_SUPPORT
@@ -965,6 +966,17 @@ void can_rx_isr (void)
     {
         /* Set the mailbox number to 28 (RX FIFO). */
         mailbox = CAN_MAILBOX_ID_RX_FIFO;
+
+        uint8_t rfcr = p_reg->RFCR;
+        if (rfcr & R_CAN0_RFCR_RFMLF_Msk)
+        {
+            /* Clear the Receive FIFO Message Lost Flag if set (see Section 37.2.12 'Receive FIFO Pointer Control
+             * Register (RFPCR)' in the RA6M3 User's Manual (R01UH0886EJ0110))  */
+            p_reg->RFCR_b.RFMLF = 0;
+
+            /* Add a FIFO message lost flag to the event */
+            args.event |= CAN_EVENT_FIFO_MESSAGE_LOST;
+        }
     }
     else
 #endif
@@ -977,9 +989,6 @@ void can_rx_isr (void)
 
     /* Read frame to args */
     r_can_mailbox_read(p_ctrl, mailbox, &args.frame);
-
-    args.p_frame = &args.frame;
-    args.event   = CAN_EVENT_RX_COMPLETE;
 
     /* Save the receive mailbox number. */
     args.mailbox = mailbox;
@@ -1074,7 +1083,6 @@ void can_tx_isr (void)
 
     args.channel   = p_ctrl->p_cfg->channel;
     args.p_context = p_ctrl->p_context;
-    args.p_frame   = NULL;
     r_can_call_callback(p_ctrl, &args);
 
     /* Check for other mailboxes with pending transmit complete flags. */

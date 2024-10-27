@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -28,6 +28,10 @@
 #include "r_glcdc.h"
 #include "r_glcdc_cfg.h"
 
+#if defined(GLCDC_CFG_USING_DSI)
+ #include "r_mipi_dsi_api.h"
+#endif
+
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
@@ -49,21 +53,21 @@
 #define GLCDC_PRV_CLUT_ENTRY_SIZE                      (256U)
 
 /* Panel timing, Maximum threshold */
-#define GLCDC_PRV_BG_PLANE_H_CYC_MAX                   (1024U)         ///< BG_PERI.FH (Max=1024)
-#define GLCDC_PRV_BG_PLANE_V_CYC_MAX                   (1024U)         ///< BG_PERI.FV (Max=1024)
-#define GLCDC_PRV_BG_PLANE_H_CYC_ACTIVE_SIZE_MAX       (1016U)         ///< BG_HSIZE.HW (Max=1016)
-#define GLCDC_PRV_BG_PLANE_V_CYC_ACTIVE_SIZE_MAX       (1020U)         ///< BG_VSIZE.VW (Max=1020)
-#define GLCDC_PRV_BG_PLANE_H_CYC_ACTIVE_POS_MAX        (1006U)         ///< BG_HSIZE.HP (Max=1006, note that this value is 1cycle larger than GRn_AB3.GRCHS)
-#define GLCDC_PRV_BG_PLANE_V_CYC_ACTIVE_POS_MAX        (1007U)         ///< BG_VSIZE.VP (Max=1007, note that this value is 1cycle larger than GRn_AB3.GRCVS)
+#define GLCDC_PRV_BG_PLANE_H_CYC_MAX                   (2047U)         ///< BG_PERI.FH
+#define GLCDC_PRV_BG_PLANE_V_CYC_MAX                   (2047U)         ///< BG_PERI.FV
+#define GLCDC_PRV_BG_PLANE_H_CYC_ACTIVE_SIZE_MAX       (2039U)         ///< BG_HSIZE.HW (Max=2039)
+#define GLCDC_PRV_BG_PLANE_V_CYC_ACTIVE_SIZE_MAX       (2043U)         ///< BG_VSIZE.VW (Max=2043)
+#define GLCDC_PRV_BG_PLANE_H_CYC_ACTIVE_POS_MAX        (2029U)         ///< BG_HSIZE.HP (Max=2029, note that this value is 1cycle larger than GRn_AB3.GRCHS)
+#define GLCDC_PRV_BG_PLANE_V_CYC_ACTIVE_POS_MAX        (2030U)         ///< BG_VSIZE.VP (Max=2030, note that this value is 1cycle larger than GRn_AB3.GRCVS)
 #define GLCDC_PRV_GR_PLANE_TOTAL_TRANSFER_TIMES_MAX    (65536U)        ///< GRn_FLM5.DATANUM (Max=65536)
-#define GLCDC_PRV_GR_PLANE_V_CYC_ACTIVE_SIZE_MAX       (1020U)         ///< GRn_AB2.GRCVW (Max=1020) ; Image Area, GRn_AB4.ARCVW (Max=1020); Rectangular Area
-#define GLCDC_PRV_GR_PLANE_H_CYC_ACTIVE_POS_MAX        (1005U)         ///< GRn_AB3.GRCHS (Max=1005) ; Image Area, GRn_AB5.ARCHS (Max=1005); Rectangular Area
-#define GLCDC_PRV_GR_PLANE_V_CYC_ACTIVE_POS_MAX        (1006U)         ///< GRn_AB2.GRCVS (Max=1006) ; Image Area, GRn_AB4.ARCVS (Max=1006); Rectangular Area
-#define GLCDC_PRV_TCON_SIGNAL_ASSERT_WIDTH_MAX         (1023U)
+#define GLCDC_PRV_GR_PLANE_V_CYC_ACTIVE_SIZE_MAX       (2043U)         ///< GRn_AB2.GRCVW (Max=2043) ; Image Area, GRn_AB4.ARCVW (Max=2043); Rectangular Area
+#define GLCDC_PRV_GR_PLANE_H_CYC_ACTIVE_POS_MAX        (2028U)         ///< GRn_AB3.GRCHS (Max=2028) ; Image Area, GRn_AB5.ARCHS (Max=2028); Rectangular Area
+#define GLCDC_PRV_GR_PLANE_V_CYC_ACTIVE_POS_MAX        (2029U)         ///< GRn_AB2.GRCVS (Max=2029) ; Image Area, GRn_AB4.ARCVS (Max=2029); Rectangular Area
+#define GLCDC_PRV_TCON_SIGNAL_ASSERT_WIDTH_MAX         (2046U)
 
 /* Panel timing, Minimum threshold */
-#define GLCDC_PRV_BG_PLANE_H_CYC_MIN                   ((uint16_t) 24) ///< BG_PERI.FH (Min=24)
-#define GLCDC_PRV_BG_PLANE_V_CYC_MIN                   ((uint16_t) 20) ///< BG_PERI.FV (Min=20)
+#define GLCDC_PRV_BG_PLANE_H_CYC_MIN                   ((uint16_t) 23) ///< BG_PERI.FH
+#define GLCDC_PRV_BG_PLANE_V_CYC_MIN                   ((uint16_t) 19) ///< BG_PERI.FV
 #define GLCDC_PRV_BG_PLANE_HSYNC_POS_MIN               ((uint16_t) 1)  ///< BG_HSYNC.HP (Min=1)
 #define GLCDC_PRV_BG_PLANE_VSYNC_POS_MIN               ((uint16_t) 1)  ///< BG_HSYNC.VP (Min=1)
 #define GLCDC_PRV_BG_PLANE_H_CYC_ACTIVE_SIZE_MIN       ((uint16_t) 16) ///< BG_HSIZE.HW (Min=16)
@@ -192,7 +196,8 @@ typedef struct st_recalculated_param
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
-static void r_glcdc_sync_signal_set(display_cfg_t const * const p_cfg);
+static fsp_err_t r_glcdc_stop(glcdc_instance_ctrl_t * const p_ctrl);
+static void      r_glcdc_sync_signal_set(display_cfg_t const * const p_cfg);
 
 static void r_glcdc_background_screen_set(display_cfg_t const * const p_cfg);
 
@@ -263,9 +268,8 @@ const display_api_t g_display_on_glcdc =
     .bufferChange = R_GLCDC_BufferChange,
     .clut         = R_GLCDC_ClutUpdate,
     .clutEdit     = R_GLCDC_ClutEdit,
-#if GLCDC_CFG_COLOR_CORRECTION_ENABLE
     .correction   = R_GLCDC_ColorCorrection,
-#endif
+    .colorKeySet  = R_GLCDC_ColorKeySet,
     .statusGet    = R_GLCDC_StatusGet,
 };
 
@@ -292,7 +296,7 @@ static volatile bool g_clut_data_latched[2] = {true, true};
 /* Look-up table for r_glcdc_tcon_set */
 static uint32_t volatile * g_tcon_lut[] =
 {
-    &(R_GLCDC->TCON.STVA2), &(R_GLCDC->TCON.STVB2), &(R_GLCDC->TCON.STHA2), &(R_GLCDC->TCON.STHB2)
+    &(R_GLCDC->TCON.STVA2), &(R_GLCDC->TCON.STVB2), &(R_GLCDC->TCON.STHA2), &(R_GLCDC->TCON.STHB2),
 };
 
 /* Look-up table for converting display_in_format_t to glcdc_input_interface_format_t */
@@ -374,7 +378,7 @@ fsp_err_t R_GLCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const *
     R_BSP_MODULE_START(FSP_IP_GLCDC, 0);
 
     /* Release GLCDC from a SW reset status. */
-    R_GLCDC->BG.EN_b.SWRST = 1U; /**< releases software reset. */;
+    R_GLCDC->BG.EN_b.SWRST = 1U;
 
     /* Set the dot clock frequency */
     r_glcdc_clock_set(p_cfg);
@@ -423,19 +427,34 @@ fsp_err_t R_GLCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const *
                             (GLCDC_PRV_CONTRAST_DEFAULT & GLCDC_PRV_OUT_CONTRAST_CONTR_MASK);
 #endif
 
-    p_ctrl->state        = DISPLAY_STATE_OPENED; /// Change GLCDC driver state
-    p_ctrl->p_callback   = p_cfg->p_callback;    /// Save callback function
-    p_ctrl->p_context    = p_cfg->p_context;     /// Save user defined context
-    p_ctrl->p_cfg        = p_cfg;                /// Save user configuration
-    g_ctrl_blk.p_context = p_ctrl;               /// Save the display interface context into GLCDC HAL control block
+    p_ctrl->p_callback   = p_cfg->p_callback; /// Save callback function
+    p_ctrl->p_context    = p_cfg->p_context;  /// Save user defined context
+    p_ctrl->p_cfg        = p_cfg;             /// Save user configuration
+    g_ctrl_blk.p_context = p_ctrl;            /// Save the display interface context into GLCDC HAL control block
 
     /* Set the line number to trigger the line detect interrupt */
     R_GLCDC->GR[1].CLUTINT_b.LINE = (uint16_t) (p_cfg->output.vtiming.back_porch +
                                                 p_cfg->output.vtiming.display_cyc +
                                                 GLCDC_PRV_BG_PLANE_HSYNC_POS_MIN) & GLCDC_PRV_GR_CLUTINT_LINE_MASK;
 
-    /* Enable GLCDC interrupts */
-    r_glcdc_interrupt_enable(p_api_ctrl);
+#if defined(GLCDC_CFG_USING_DSI)
+
+    /* DSI must be opened after GLCDC configuration. See RA8 UM R01UH0995EJ0050 Section 56.3.1 */
+    glcdc_extended_cfg_t * p_extend     = (glcdc_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    mipi_dsi_instance_t  * dsi_instance = (mipi_dsi_instance_t *) p_extend->phy_layer;
+    err = dsi_instance->p_api->open(dsi_instance->p_ctrl, dsi_instance->p_cfg);
+#endif
+
+    if (FSP_SUCCESS == err)
+    {
+        /* Enable GLCDC interrupts */
+        r_glcdc_interrupt_enable(p_api_ctrl);
+        p_ctrl->state = DISPLAY_STATE_OPENED; /// Change GLCDC driver state
+    }
+    else
+    {
+        R_BSP_MODULE_STOP(FSP_IP_GLCDC, 0);
+    }
 
     return err;
 }
@@ -462,8 +481,22 @@ fsp_err_t R_GLCDC_Close (display_ctrl_t * const p_api_ctrl)
     FSP_ERROR_RETURN(DISPLAY_STATE_CLOSED != p_ctrl->state, FSP_ERR_NOT_OPEN);
 #endif
 
+    /* Stop video if running */
+    if (R_GLCDC->BG.EN_b.EN)
+    {
+        r_glcdc_stop(p_api_ctrl);
+    }
+
+#if defined(GLCDC_CFG_USING_DSI)
+
+    /* DSI must be closed before GLCDC. See RA8 UM R01UH0995EJ0050 Section 56.3.7.2 */
+    glcdc_extended_cfg_t * p_extend     = (glcdc_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    mipi_dsi_instance_t  * dsi_instance = (mipi_dsi_instance_t *) p_extend->phy_layer;
+    err = dsi_instance->p_api->close(dsi_instance->p_ctrl);
+#endif
+
     /* Return immediately if the background block register updating is performed. */
-    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->BG.MON_b.EN & 1U), FSP_ERR_INVALID_UPDATE_TIMING);
+    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->BG.MON_b.VEN & 1U), FSP_ERR_INVALID_UPDATE_TIMING);
 
     /* Disable the GLCDC interrupts in the NVIC */
     if (p_ctrl->p_cfg->line_detect_irq >= 0)
@@ -517,9 +550,17 @@ fsp_err_t R_GLCDC_Start (display_ctrl_t * const p_api_ctrl)
     FSP_ERROR_RETURN(DISPLAY_STATE_OPENED == p_ctrl->state, FSP_ERR_NOT_OPEN);
 #endif
 
+#if defined(GLCDC_CFG_USING_DSI)
+
+    /* DSI must be started before GLCDC. See RA8 UM R01UH0995EJ0050 Section 56.3.7.1 */
+    glcdc_extended_cfg_t * p_extend     = (glcdc_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    mipi_dsi_instance_t  * dsi_instance = (mipi_dsi_instance_t *) p_extend->phy_layer;
+    err = dsi_instance->p_api->start(dsi_instance->p_ctrl);
+#endif
+
     /* Start to output the vertical and horizontal synchronization signals and screen data. */
 
-    /**< enables background plane operation and internal register value reflection. */
+    /* enables background plane operation and internal register value reflection. */
     R_GLCDC->BG.EN_b.VEN = 1U;
     R_GLCDC->BG.EN_b.EN  = 1U;
 
@@ -547,25 +588,13 @@ fsp_err_t R_GLCDC_Start (display_ctrl_t * const p_api_ctrl)
 fsp_err_t R_GLCDC_Stop (display_ctrl_t * const p_api_ctrl)
 {
     glcdc_instance_ctrl_t * p_ctrl = (glcdc_instance_ctrl_t *) p_api_ctrl;
-    fsp_err_t               err    = FSP_SUCCESS;
 
 #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(p_ctrl);
     FSP_ERROR_RETURN((DISPLAY_STATE_DISPLAYING == p_ctrl->state), FSP_ERR_INVALID_MODE);
 #endif
 
-    /* Return immediately if the register is being updated */
-    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->GR[DISPLAY_FRAME_LAYER_1].VEN_b.PVEN), FSP_ERR_INVALID_UPDATE_TIMING);
-    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->GR[DISPLAY_FRAME_LAYER_2].VEN_b.PVEN), FSP_ERR_INVALID_UPDATE_TIMING);
-    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->OUT.VLATCH_b.VEN), FSP_ERR_INVALID_UPDATE_TIMING);
-    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->BG.EN_b.VEN), FSP_ERR_INVALID_UPDATE_TIMING);
-
-    /* Disable background plane operation */
-    R_GLCDC->BG.EN_b.EN = 0U;
-
-    p_ctrl->state = DISPLAY_STATE_OPENED;
-
-    return err;
+    return r_glcdc_stop(p_ctrl);
 }
 
 /*******************************************************************************************************************//**
@@ -669,8 +698,6 @@ fsp_err_t R_GLCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
     return FSP_SUCCESS;
 }
 
-#if GLCDC_CFG_COLOR_CORRECTION_ENABLE
-
 /*******************************************************************************************************************//**
  * Perform color correction through the GLCDC module. Implements display_api_t::correction.
  *
@@ -680,6 +707,8 @@ fsp_err_t R_GLCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
  *                                              DISPLAY_STATE_DISPLAYING.
  * @retval  FSP_ERR_INVALID_UPDATE_TIMING      A function call is performed while the GLCDC is updating registers
  *                                              internally.
+ * @retval  FSP_ERR_UNSUPPORTED                Feature not supported with the current configuration.
+ *
  * @retval  FSP_ERR_INVALID_BRIGHTNESS_SETTING Invalid brightness correction setting found
  * @note    This API can be called when the driver is in the DISPLAY_STATE_DISPLAYING state. It returns an error if
  *           the register update operation for the background screen generation blocks or the output control block is
@@ -688,6 +717,7 @@ fsp_err_t R_GLCDC_BufferChange (display_ctrl_t const * const p_api_ctrl,
 fsp_err_t R_GLCDC_ColorCorrection (display_ctrl_t const * const       p_api_ctrl,
                                    display_correction_t const * const p_correction)
 {
+#if GLCDC_CFG_COLOR_CORRECTION_ENABLE
     glcdc_instance_ctrl_t * p_ctrl = (glcdc_instance_ctrl_t *) p_api_ctrl;
 
  #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
@@ -715,9 +745,13 @@ fsp_err_t R_GLCDC_ColorCorrection (display_ctrl_t const * const       p_api_ctrl
     R_GLCDC->OUT.VLATCH_b.VEN = 1U;
 
     return FSP_SUCCESS;
-}
+#else
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+    FSP_PARAMETER_NOT_USED(p_correction);
 
+    return FSP_ERR_UNSUPPORTED;
 #endif
+}
 
 /*******************************************************************************************************************//**
  * Write an entire color look-up table (CLUT) in the GLCDC module. Implements display_api_t::clut.
@@ -808,6 +842,22 @@ fsp_err_t R_GLCDC_ClutEdit (display_ctrl_t const * const p_api_ctrl,
 }
 
 /*******************************************************************************************************************//**
+ * Configuring color key is not supported for GLCDC.
+ *
+ * @retval FSP_ERR_UNSUPPORTED
+ **********************************************************************************************************************/
+fsp_err_t R_GLCDC_ColorKeySet (display_ctrl_t const * const p_api_ctrl,
+                               display_colorkeying_layer_t  key_cfg,
+                               display_frame_layer_t        layer)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+    FSP_PARAMETER_NOT_USED(key_cfg);
+    FSP_PARAMETER_NOT_USED(layer);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
  * Get status of GLCDC module. Implements display_api_t::statusGet.
  *
  * @retval  FSP_SUCCESS         Got status successfully.
@@ -859,6 +909,41 @@ fsp_err_t R_GLCDC_StatusGet (display_ctrl_t const * const p_api_ctrl, display_st
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
+
+/*******************************************************************************************************************//**
+ * The GLCDC stop subroutine for R_GLCDC_Stop API.
+ * @param[in]     p_ctrl                       Pointer to the configuration structure for display interface
+ * @retval  FSP_SUCCESS                   Stoped successfully.
+ * @retval  FSP_ERR_INVALID_UPDATE_TIMING The function call is performed while the GLCDC is updating register values
+ *                                          internally.
+ **********************************************************************************************************************/
+static fsp_err_t r_glcdc_stop (glcdc_instance_ctrl_t * const p_ctrl)
+{
+    fsp_err_t err = FSP_SUCCESS;
+
+#if defined(GLCDC_CFG_USING_DSI)
+
+    /* DSI must be stopped before GLCDC. See RA8 UM R01UH0995EJ0050 Section 56.3.7.2 */
+    glcdc_extended_cfg_t * p_extend     = (glcdc_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    mipi_dsi_instance_t  * dsi_instance = (mipi_dsi_instance_t *) p_extend->phy_layer;
+    err = dsi_instance->p_api->stop(dsi_instance->p_ctrl);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+#endif
+
+    /* Return immediately if the register is being updated */
+    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->GR[DISPLAY_FRAME_LAYER_1].VEN_b.PVEN), FSP_ERR_INVALID_UPDATE_TIMING);
+    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->GR[DISPLAY_FRAME_LAYER_2].VEN_b.PVEN), FSP_ERR_INVALID_UPDATE_TIMING);
+    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->OUT.VLATCH_b.VEN), FSP_ERR_INVALID_UPDATE_TIMING);
+    FSP_ERROR_RETURN(false == (bool) (R_GLCDC->BG.EN_b.VEN), FSP_ERR_INVALID_UPDATE_TIMING);
+
+    /* Disable background plane operation */
+    R_GLCDC->BG.EN_b.EN = 0U;
+
+    p_ctrl->state = DISPLAY_STATE_OPENED;
+
+    return err;
+}
+
 #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
  #if GLCDC_CFG_COLOR_CORRECTION_ENABLE
 
@@ -1237,16 +1322,22 @@ static void r_glcdc_tcon_set (glcdc_tcon_pin_t           tcon,
                               glcdc_tcon_signal_select_t signal,
                               display_signal_polarity_t  polarity)
 {
-    uint32_t invert = 0;
-
     /* Set signal polarity */
     if (DISPLAY_SIGNAL_POLARITY_LOACTIVE == polarity)
     {
-        invert = GLCDC_PRV_TCON_STXX2_INV_SET;
+        /* Set INV bit depending on register */
+        if (GLCDC_TCON_SIGNAL_SELECT_DE != signal)
+        {
+            *g_tcon_lut[signal] |= GLCDC_PRV_TCON_STXX2_INV_SET;
+        }
+        else
+        {
+            R_GLCDC->TCON.DE = 1;
+        }
     }
 
-    /* Write to register */
-    *g_tcon_lut[tcon] = signal | invert;
+    /* Set TCON signal */
+    *g_tcon_lut[tcon] |= signal;
 }
 
 /*******************************************************************************************************************//**
@@ -1312,14 +1403,12 @@ static void r_glcdc_background_screen_set (display_cfg_t const * const p_cfg)
                        (GLCDC_PRV_BG_PLANE_HSYNC_POS_MIN & GLCDC_PRV_BG_SYNC_HP_MASK);
 
     /* Set the start position and width of the background screen */
-    R_GLCDC->BG.HSIZE =
-        ((((uint32_t) (p_cfg->output.htiming.back_porch) + GLCDC_PRV_BG_PLANE_HSYNC_POS_MIN) &
-          GLCDC_PRV_BG_HSIZE_HP_MASK) << 16) +
-        (p_cfg->output.htiming.display_cyc & GLCDC_PRV_BG_HSIZE_HW_MASK);
-    R_GLCDC->BG.VSIZE =
-        ((((uint32_t) (p_cfg->output.vtiming.back_porch) + GLCDC_PRV_BG_PLANE_VSYNC_POS_MIN) &
-          GLCDC_PRV_BG_VSIZE_VP_MASK) << 16) +
-        (p_cfg->output.vtiming.display_cyc & GLCDC_PRV_BG_VSIZE_VW_MASK);
+    R_GLCDC->BG.HSIZE = ((((uint32_t) (p_cfg->output.htiming.back_porch) + GLCDC_PRV_BG_PLANE_HSYNC_POS_MIN) &
+                          GLCDC_PRV_BG_HSIZE_HP_MASK) << 16) +
+                        (p_cfg->output.htiming.display_cyc & GLCDC_PRV_BG_HSIZE_HW_MASK);
+    R_GLCDC->BG.VSIZE = ((((uint32_t) (p_cfg->output.vtiming.back_porch) + GLCDC_PRV_BG_PLANE_VSYNC_POS_MIN) &
+                          GLCDC_PRV_BG_VSIZE_VP_MASK) << 16) +
+                        (p_cfg->output.vtiming.display_cyc & GLCDC_PRV_BG_VSIZE_VW_MASK);
 
     /* Set the background color */
     R_GLCDC->BG.BGC = ((uint32_t) (p_cfg->output.bg_color.byte.r) << 16) +

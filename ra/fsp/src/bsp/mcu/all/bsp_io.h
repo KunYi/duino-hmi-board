@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -378,7 +378,11 @@ __STATIC_INLINE void R_BSP_PinWrite (bsp_io_port_pin_t pin, bsp_io_level_t level
 
     /* Set output level and pin direction to output. */
     uint32_t lvl = ((uint32_t) level | pfs_bits);
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+    R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = (uint16_t) (BSP_IO_PFS_PDR_OUTPUT | lvl);
+#else
     R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = (BSP_IO_PFS_PDR_OUTPUT | lvl);
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -391,7 +395,11 @@ __STATIC_INLINE void R_BSP_PinWrite (bsp_io_port_pin_t pin, bsp_io_level_t level
 __STATIC_INLINE void R_BSP_PinCfg (bsp_io_port_pin_t pin, uint32_t cfg)
 {
     /* Configure a pin. */
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+    R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = (uint16_t) cfg;
+#else
     R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = cfg;
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -409,7 +417,7 @@ __STATIC_INLINE void R_BSP_PinAccessEnable (void)
     /** If this is first entry then allow writing of PFS. */
     if (0 == g_protect_pfswe_counter)
     {
- #if BSP_TZ_SECURE_BUILD
+ #if BSP_TZ_SECURE_BUILD || (BSP_FEATURE_TZ_VERSION == 2 && FSP_PRIV_TZ_USE_SECURE_REGS)
         R_PMISC->PWPRS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
         R_PMISC->PWPRS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
  #else
@@ -448,7 +456,7 @@ __STATIC_INLINE void R_BSP_PinAccessDisable (void)
     /** Is it safe to disable writing of PFS? */
     if (0 == g_protect_pfswe_counter)
     {
- #if BSP_TZ_SECURE_BUILD
+ #if BSP_TZ_SECURE_BUILD || (BSP_FEATURE_TZ_VERSION == 2 && FSP_PRIV_TZ_USE_SECURE_REGS)
         R_PMISC->PWPRS = 0;                             ///< Clear PFSWE bit - writing to PFSWE bit enabled
         R_PMISC->PWPRS = 1U << BSP_IO_PWPR_B0WI_OFFSET; ///< Set BOWI bit - writing to PFS register enabled
  #else

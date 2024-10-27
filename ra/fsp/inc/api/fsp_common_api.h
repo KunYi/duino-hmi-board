@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -57,8 +57,11 @@
 #endif
 
 /** FSP Header and Footer definitions */
-#define FSP_HEADER             FSP_CPP_HEADER
-#define FSP_FOOTER             FSP_CPP_FOOTER
+#define FSP_HEADER    FSP_CPP_HEADER
+#define FSP_FOOTER    FSP_CPP_FOOTER
+
+/* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+FSP_HEADER
 
 /** Macro to be used when argument to function is ignored since function call is NSC and the parameter is statically
  *  defined on the Secure side. */
@@ -153,6 +156,9 @@ typedef enum e_fsp_err
     /* Start of CAC Specific */
     FSP_ERR_INVALID_CAC_REF_CLOCK = 600,                    ///< Measured clock rate < reference clock rate
 
+    /* Start of IIRFA Specific */
+    FSP_ERR_INVALID_RESULT = 700,                           ///< The result of one or more calculations was +/- infinity.
+
     /* Start of GLCD Specific */
     FSP_ERR_CLOCK_GENERATION           = 1000,              ///< Clock cannot be specified as system clock
     FSP_ERR_INVALID_TIMING_SETTING     = 1001,              ///< Invalid timing parameter
@@ -186,6 +192,10 @@ typedef enum e_fsp_err
 
     /* Start of touch panel framework specific */
     FSP_ERR_CALIBRATE_FAILED = 1200,                        ///< Calibration failed
+
+    /* Start of IIRFA specific */
+    FSP_ERR_IIRFA_ECC_1BIT = 1300,                          ///< 1-bit ECC error detected
+    FSP_ERR_IIRFA_ECC_2BIT = 1301,                          ///< 2-bit ECC error detected
 
     /* Start of IP specific */
     FSP_ERR_IP_HARDWARE_NOT_PRESENT = 1400,                 ///< Requested IP does not exist on this device
@@ -287,6 +297,16 @@ typedef enum e_fsp_err
     FSP_ERR_WIFI_FAILED           = 70004,           ///< WiFi Failed.
     FSP_ERR_WIFI_SCAN_COMPLETE    = 70005,           ///< Wifi scan has completed.
     FSP_ERR_WIFI_AP_NOT_CONNECTED = 70006,           ///< WiFi module is not connected to access point
+    FSP_ERR_WIFI_UNKNOWN_AT_CMD   = 70007,           ///< DA16200 Unknown AT command Error
+    FSP_ERR_WIFI_INSUF_PARAM      = 70008,           ///< DA16200 Insufficient parameter
+    FSP_ERR_WIFI_TOO_MANY_PARAMS  = 70009,           ///< DA16200 Too many parameters
+    FSP_ERR_WIFI_INV_PARAM_VAL    = 70010,           ///< DA16200 Wrong parameter value
+    FSP_ERR_WIFI_NO_RESULT        = 70011,           ///< DA16200 No result
+    FSP_ERR_WIFI_RSP_BUF_OVFLW    = 70012,           ///< DA16200 Response buffer overflow
+    FSP_ERR_WIFI_FUNC_NOT_CONFIG  = 70013,           ///< DA16200 Function is not configured
+    FSP_ERR_WIFI_NVRAM_WR_FAIL    = 70014,           ///< DA16200 NVRAM write failure
+    FSP_ERR_WIFI_RET_MEM_WR_FAIL  = 70015,           ///< DA16200 Retention memory write failure
+    FSP_ERR_WIFI_UNKNOWN_ERR      = 70016,           ///< DA16200 unknown error
 
     /* Start of SF_CELLULAR Specific */
     FSP_ERR_CELLULAR_CONFIG_FAILED       = 80000,    ///< Cellular module Configuration failed.
@@ -333,6 +353,13 @@ typedef enum e_fsp_err
     FSP_ERR_CRYPTO_SCE_PARAMETER         = 0x10014,  ///< Input date is illegal.
     FSP_ERR_CRYPTO_SCE_PROHIBIT_FUNCTION = 0x10015,  ///< An invalid function call occurred.
 
+    /* Start of Crypto RSIP specific (0x10100) */
+    FSP_ERR_CRYPTO_RSIP_RESOURCE_CONFLICT = 0x10100,      ///< Hardware resource is busy
+    FSP_ERR_CRYPTO_RSIP_FATAL             = 0x10101,      ///< Hardware fatal error or unexpected return
+    FSP_ERR_CRYPTO_RSIP_FAIL              = 0x10102,      ///< Internal error
+    FSP_ERR_CRYPTO_RSIP_KEY_SET_FAIL      = 0x10103,      ///< Input key type is illegal
+    FSP_ERR_CRYPTO_RSIP_AUTHENTICATION    = 0x10104,      ///< Authentication failed
+
     /* Start of SF_CRYPTO specific */
     FSP_ERR_CRYPTO_COMMON_NOT_OPENED      = 0x20000, ///< Crypto Framework Common is not opened
     FSP_ERR_CRYPTO_HAL_ERROR              = 0x20001, ///< Cryoto HAL module returned an error
@@ -360,5 +387,8 @@ typedef enum e_fsp_err
 /***********************************************************************************************************************
  * Function prototypes
  **********************************************************************************************************************/
+
+/* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+FSP_FOOTER
 
 #endif

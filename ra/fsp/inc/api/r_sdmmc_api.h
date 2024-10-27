@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -33,15 +33,13 @@
 FSP_HEADER
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_STORAGE_INTERFACES
  * @defgroup SDMMC_API SD/MMC Interface
  * @brief Interface for accessing SD, eMMC, and SDIO devices.
  *
  * @section SDMMC_API_SUMMARY Summary
  * The r_sdhi interface provides standard SD and eMMC media functionality. This interface also supports SDIO.
  *
- * The SD/MMC interface is implemented by:
- * - @ref SDHI
  *
  * @{
  **********************************************************************************************************************/
@@ -138,6 +136,8 @@ typedef enum e_sdmmc_r1_state
 typedef union u_sdmmc_response
 {
     uint32_t status;
+
+    /** SDIO Card Status Register. */
     struct
     {
         uint32_t                : 3;
@@ -169,7 +169,7 @@ typedef union u_sdmmc_response
         uint32_t block_len_error           : 1; // The transferred block length is not allowed for this card, or the number of transferred bytes does not match the block length.
         uint32_t address_error             : 1; // A misaligned address which did not match the block length was used in the command.
         uint32_t out_of_range              : 1; // The command's argument was out of the allowed range for this card.
-    };
+    } status_b;
 
     struct
     {
@@ -272,6 +272,37 @@ typedef struct st_sdmmc_callback_args
     void const     * p_context;        ///< Placeholder for user data.
 } sdmmc_callback_args_t;
 
+/** Non-secure arguments for writeIo guard function */
+typedef struct st_sdmmc_write_io_args_t
+{
+    uint8_t * const       p_data;
+    uint32_t              function;
+    uint32_t              address;
+    sdmmc_io_write_mode_t read_after_write;
+} sdmmc_write_io_args_t;
+
+/** Non-secure arguments for readIoExt guard function */
+typedef struct st_sdmmc_read_io_ext_args_t
+{
+    uint8_t * const          p_dest;
+    uint32_t                 function;
+    uint32_t                 address;
+    uint32_t * const         count;
+    sdmmc_io_transfer_mode_t transfer_mode;
+    sdmmc_io_address_mode_t  address_mode;
+} sdmmc_read_io_ext_args_t;
+
+/** Non-secure arguments for writeIoExt guard function */
+typedef struct st_sdmmc_write_io_ext_args_t
+{
+    uint8_t const * const    p_source;
+    uint32_t                 function;
+    uint32_t                 address;
+    uint32_t                 count;
+    sdmmc_io_transfer_mode_t transfer_mode;
+    sdmmc_io_address_mode_t  address_mode;
+} sdmmc_write_io_ext_args_t;
+
 /** SD/MMC Configuration */
 typedef struct st_sdmmc_cfg
 {
@@ -307,8 +338,6 @@ typedef struct st_sdmmc_cfg
 } sdmmc_cfg_t;
 
 /** SD/MMC control block.  Allocate an instance specific control block to pass into the SD/MMC API calls.
- * @par Implemented as
- * - sdmmc_instance_ctrl_t
  */
 typedef void sdmmc_ctrl_t;
 
@@ -317,8 +346,6 @@ typedef struct st_sdmmc_api
 {
     /** Open the SD/MMC driver.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_Open()
      *
      * @param[in]     p_ctrl    Pointer to SD/MMC instance control block.
      * @param[in]     p_cfg     Pointer to SD/MMC instance configuration structure.
@@ -328,8 +355,6 @@ typedef struct st_sdmmc_api
     /** Initializes an SD/MMC device.  If the device is a card, the card must be plugged in prior to calling this API.
      * This API blocks until the device initialization procedure is complete.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_MediaInit()
      *
      * @param[in]     p_ctrl    Pointer to SD/MMC instance control block.
      * @param[out]    p_device  Pointer to store device information.
@@ -339,8 +364,6 @@ typedef struct st_sdmmc_api
     /** Read data from an SD/MMC channel.
      * This API is not supported for SDIO devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_Read()
      *
      * @param[in]     p_ctrl          Pointer to an open SD/MMC instance control block.
      * @param[out]    p_dest          Pointer to data buffer to read data to.
@@ -354,8 +377,6 @@ typedef struct st_sdmmc_api
     /** Write data to SD/MMC channel.
      * This API is not supported for SDIO devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_Write()
      *
      * @param[in]     p_ctrl          Pointer to an open SD/MMC instance control block.
      * @param[in]     p_source        Pointer to data buffer to write data from.
@@ -369,8 +390,6 @@ typedef struct st_sdmmc_api
     /** Read one byte of I/O data from an SDIO device.
      * This API is not supported for SD or eMMC memory devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_ReadIo()
      *
      * @param[in]     p_ctrl    Pointer to an open SD/MMC instance control block.
      * @param[out]    p_data    Pointer to location to store data byte.
@@ -383,8 +402,6 @@ typedef struct st_sdmmc_api
     /** Write one byte of I/O data to an SDIO device.
      * This API is not supported for SD or eMMC memory devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_WriteIo()
      *
      * @param[in]     p_ctrl            Pointer to an open SD/MMC instance control block.
      * @param[in,out] p_data            Pointer to data byte to write.  Read data is also provided here if
@@ -399,8 +416,6 @@ typedef struct st_sdmmc_api
     /** Read multiple bytes or blocks of I/O data from an SDIO device.
      * This API is not supported for SD or eMMC memory devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_ReadIoExt()
      *
      * @param[in]     p_ctrl          Pointer to an open SD/MMC instance control block.
      * @param[out]    p_dest          Pointer to data buffer to read data to.
@@ -417,8 +432,6 @@ typedef struct st_sdmmc_api
     /** Write multiple bytes or blocks of I/O data to an SDIO device.
      * This API is not supported for SD or eMMC memory devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_WriteIoExt()
      *
      * @param[in]     p_ctrl          Pointer to an open SD/MMC instance control block.
      * @param[in]     p_source        Pointer to data buffer to write data from.
@@ -435,8 +448,6 @@ typedef struct st_sdmmc_api
     /** Enables SDIO interrupt for SD/MMC instance.
      * This API is not supported for SD or eMMC memory devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_IoIntEnable
      *
      * @param[in]     p_ctrl    Pointer to an open SD/MMC instance control block.
      * @param[in]     enable    Interrupt enable = true, interrupt disable = false.
@@ -445,8 +456,6 @@ typedef struct st_sdmmc_api
 
     /** Get SD/MMC device status.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_StatusGet()
      *
      * @param[in]     p_ctrl    Pointer to an open SD/MMC instance control block.
      * @param[out]    p_status  Pointer to current driver status.
@@ -456,8 +465,6 @@ typedef struct st_sdmmc_api
     /** Erase SD/MMC sectors. The sector size for erase is fixed at 512 bytes.
      * This API is not supported for SDIO devices.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_Erase
      *
      * @param[in]     p_ctrl        Pointer to an open SD/MMC instance control block.
      * @param[in]     start_sector  First sector to erase. Must be a multiple of sdmmc_device_t::erase_sector_count.
@@ -467,8 +474,6 @@ typedef struct st_sdmmc_api
     fsp_err_t (* erase)(sdmmc_ctrl_t * const p_ctrl, uint32_t const start_sector, uint32_t const sector_count);
 
     /** Specify callback function and optional context pointer and working memory pointer.
-     * @par Implemented as
-     * - @ref R_SDHI_CallbackSet()
      *
      * @param[in]   p_ctrl                   Control block set in @ref sdmmc_api_t::open call.
      * @param[in]   p_callback               Callback function to register
@@ -476,13 +481,11 @@ typedef struct st_sdmmc_api
      * @param[in]   p_working_memory         Pointer to volatile memory where callback structure can be allocated.
      *                                       Callback arguments allocated here are only valid during the callback.
      */
-    fsp_err_t (* callbackSet)(sdmmc_ctrl_t * const p_api_ctrl, void (* p_callback)(sdmmc_callback_args_t *),
+    fsp_err_t (* callbackSet)(sdmmc_ctrl_t * const p_ctrl, void (* p_callback)(sdmmc_callback_args_t *),
                               void const * const p_context, sdmmc_callback_args_t * const p_callback_memory);
 
     /** Close open SD/MMC device.
      *
-     * @par Implemented as
-     * - @ref R_SDHI_Close()
      *
      * @param[in]     p_ctrl    Pointer to an open SD/MMC instance control block.
      */
@@ -503,5 +506,5 @@ FSP_FOOTER
 #endif
 
 /*******************************************************************************************************************//**
- * @} (end addtogroup SDMMC_API)
+ * @} (end defgroup SDMMC_API)
  **********************************************************************************************************************/

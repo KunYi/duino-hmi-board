@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -26,7 +26,7 @@
 #include "bsp_api.h"
 #include "r_ether_phy.h"
 
-#if (ETHER_PHY_CFG_USE_PHY == ETHER_PHY_CFG_USE_PHY_KSZ8091RNB)
+#if (ETHER_PHY_CFG_TARGET_KSZ8091RNB_ENABLE)
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -52,9 +52,9 @@
 /***********************************************************************************************************************
  * Exported global function
  ***********************************************************************************************************************/
-void            ether_phy_targets_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
-extern uint32_t ether_phy_read(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr);
-extern void     ether_phy_write(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t reg_addr, uint32_t data);
+void ether_phy_target_ksz8091rnb_initialize(ether_phy_instance_ctrl_t * p_instance_ctrl);
+bool ether_phy_target_ksz8091rnb_is_support_link_partner_ability(ether_phy_instance_ctrl_t * p_instance_ctrl,
+                                                                 uint32_t                    line_speed_duplex);
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -71,7 +71,7 @@ extern void     ether_phy_write(ether_phy_instance_ctrl_t * p_instance_ctrl, uin
  *                    Ethernet channel number
  * Return Value : none
  ***********************************************************************************************************************/
-void ether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
+void ether_phy_target_ksz8091rnb_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
 {
     uint32_t reg;
 
@@ -80,12 +80,12 @@ void ether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
      * b10=1:Enable link-down interrupt
      * b8=1 :Enable link-up interrupt
      */
-    ether_phy_write(p_instance_ctrl,
-                    ETHER_PHY_REG_INTERRUPT_CONTROL,
-                    (0x1 << ETHER_PHY_REG_INTERRUPT_CONTROL_LUIE_OFFSET | 0x1 <<
-                     ETHER_PHY_REG_INTERRUPT_CONTROL_LDIE_OFFSET));
-    ether_phy_read(p_instance_ctrl, ETHER_PHY_REG_INTERRUPT_CONTROL);
-    reg = ether_phy_read(p_instance_ctrl, ETHER_PHY_REG_PHY_CONTROL2);
+    R_ETHER_PHY_Write(p_instance_ctrl,
+                      ETHER_PHY_REG_INTERRUPT_CONTROL,
+                      (0x1 << ETHER_PHY_REG_INTERRUPT_CONTROL_LUIE_OFFSET | 0x1 <<
+                       ETHER_PHY_REG_INTERRUPT_CONTROL_LDIE_OFFSET));
+    R_ETHER_PHY_Read(p_instance_ctrl, ETHER_PHY_REG_INTERRUPT_CONTROL, &reg);
+    R_ETHER_PHY_Read(p_instance_ctrl, ETHER_PHY_REG_PHY_CONTROL2, &reg);
 
     /* b7=1:RMII 50MHz clock mode; clock input to XI(pin 9) is 50MHz */
  #if (ETHER_PHY_CFG_USE_REF_CLK == 0)
@@ -93,8 +93,27 @@ void ether_phy_targets_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
  #endif
 
     /* b9=0:Interrupt pin active low */
-    reg &= (uint16_t) ~ETHER_PHY_REG_PHY_CONTROL2_RMII_IL_OFFSET;
-    ether_phy_write(p_instance_ctrl, ETHER_PHY_REG_PHY_CONTROL2, reg);
+    reg &= (uint16_t) ~(0x1 << ETHER_PHY_REG_PHY_CONTROL2_RMII_IL_OFFSET);
+    R_ETHER_PHY_Write(p_instance_ctrl, ETHER_PHY_REG_PHY_CONTROL2, reg);
 }                                      /* End of function ether_phy_targets_initialize() */
 
-#endif /* ETHER_PHY_CFG_USE_PHY == ETHER_PHY_CFG_USE_PHY_KSZ8091RNB */
+/***********************************************************************************************************************
+ * Function Name: ether_phy_targets_is_support_link_partner_ability
+ * Description  : Check if the PHY-LSI connected Ethernet controller supports link ability
+ * Arguments    : p_instance_ctrl -
+ *                    Ethernet control block
+ *                line_speed_duplex -
+ *                    Line speed duplex of link partner PHY-LSI
+ * Return Value : bool
+ ***********************************************************************************************************************/
+bool ether_phy_target_ksz8091rnb_is_support_link_partner_ability (ether_phy_instance_ctrl_t * p_instance_ctrl,
+                                                                  uint32_t                    line_speed_duplex)
+{
+    FSP_PARAMETER_NOT_USED(p_instance_ctrl);
+    FSP_PARAMETER_NOT_USED(line_speed_duplex);
+
+    /* This PHY-LSI supports half and full duplex mode. */
+    return true;
+}                                      /* End of function ether_phy_targets_is_support_link_partner_ability() */
+
+#endif /* ETHER_PHY_CFG_TARGET_KSZ8091RNB_ENABLE */

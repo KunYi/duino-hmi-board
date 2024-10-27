@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -35,7 +35,7 @@
 #define IOPORT_CLOSED                     (0x00000000U)
 
 /* Mask to get PSEL bitfield from PFS register. */
-#define BSP_PRV_PFS_PSEL_MASK             (0x1F000000UL)
+#define BSP_PRV_PFS_PSEL_MASK             (R_PFS_PORT_PIN_PmnPFS_PSEL_Msk)
 
 /* Shift to get pin 0 on a package in extended data. */
 #define IOPORT_PRV_EXISTS_B0_SHIFT        (16UL)
@@ -45,10 +45,6 @@
 
 /* Shift to get port in bsp_io_port_t and bsp_io_port_pin_t enums. */
 #define IOPORT_PRV_PORT_OFFSET            (8U)
-
-#ifndef BSP_MCU_VBATT_SUPPORT
- #define BSP_MCU_VBATT_SUPPORT            (0U)
-#endif
 
 #define IOPORT_PRV_PORT_BITS              (0xFF00U)
 #define IOPORT_PRV_PIN_BITS               (0x00FFU)
@@ -77,14 +73,11 @@
  **********************************************************************************************************************/
 static void r_ioport_pins_config(const ioport_cfg_t * p_cfg);
 
-static void r_ioport_hw_pin_event_output_data_write(bsp_io_port_t  port,
-                                                    ioport_size_t  set_value,
-                                                    ioport_size_t  reset_value,
-                                                    bsp_io_level_t pin_level);
+static void r_ioport_hw_pin_event_output_data_write(bsp_io_port_t port, ioport_size_t pin, bsp_io_level_t pin_level);
 
 static void r_ioport_pfs_write(bsp_io_port_pin_t pin, uint32_t value);
 
-#if BSP_MCU_VBATT_SUPPORT
+#if BSP_FEATURE_SYSC_HAS_VBTICTLR || BSP_FEATURE_RTC_HAS_TCEN
 static void bsp_vbatt_init(ioport_cfg_t const * const p_pin_cfg); // Used internally by BSP
 
 #endif
@@ -106,7 +99,6 @@ const ioport_api_t g_ioport_on_ioport =
     .pinCfg               = R_IOPORT_PinCfg,
     .pinEventInputRead    = R_IOPORT_PinEventInputRead,
     .pinEventOutputWrite  = R_IOPORT_PinEventOutputWrite,
-    .pinEthernetModeCfg   = R_IOPORT_EthernetModeCfg,
     .pinRead              = R_IOPORT_PinRead,
     .pinWrite             = R_IOPORT_PinWrite,
     .portDirectionSet     = R_IOPORT_PortDirectionSet,
@@ -116,7 +108,7 @@ const ioport_api_t g_ioport_on_ioport =
     .portWrite            = R_IOPORT_PortWrite,
 };
 
-#if BSP_MCU_VBATT_SUPPORT
+#if BSP_FEATURE_SYSC_HAS_VBTICTLR || BSP_FEATURE_RTC_HAS_TCEN
 static const bsp_io_port_pin_t g_vbatt_pins_input[] =
 {
     BSP_IO_PORT_04_PIN_02,             ///< Associated with VBTICTLR->VCH0INEN
@@ -148,7 +140,7 @@ fsp_err_t R_IOPORT_Open (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p_cf
 #if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_cfg);
-    FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data);
+    FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data || 0 == p_cfg->number_of_pins);
     FSP_ERROR_RETURN(IOPORT_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
@@ -238,7 +230,7 @@ fsp_err_t R_IOPORT_PinCfg (ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, 
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
 
-#if BSP_MCU_VBATT_SUPPORT
+#if BSP_FEATURE_SYSC_HAS_VBTICTLR || BSP_FEATURE_RTC_HAS_TCEN
 
     /* Create temporary structure for handling VBATT pins. */
     ioport_cfg_t     temp_cfg;
@@ -314,9 +306,15 @@ fsp_err_t R_IOPORT_PortRead (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, i
 
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS((port >> IOPORT_PRV_PORT_OFFSET) & IOPORT_PRV_8BIT_MASK);
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+
+    /* Read current value of PIDR for the specified port */
+    *p_port_value = p_ioport_regs->PIDR;
+#else
 
     /* Read current value of PCNTR2 register for the specified port */
     *p_port_value = p_ioport_regs->PCNTR2 & IOPORT_PRV_16BIT_MASK;
+#endif
 
     return FSP_SUCCESS;
 }
@@ -334,7 +332,7 @@ fsp_err_t R_IOPORT_PortRead (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, i
  * @retval FSP_SUCCESS                  Port written to
  * @retval FSP_ERR_INVALID_ARGUMENT     The port and/or mask not valid
  * @retval FSP_ERR_NOT_OPEN             The module has not been opened
- * @retval FSP_ERR_ASSERTION            NULL pointerd
+ * @retval FSP_ERR_ASSERTION            NULL pointer
  *
  * @note This function is re-entrant for different ports. This function makes use of the PCNTR3 register to atomically
  * modify the levels on the specified pins on a port.
@@ -363,8 +361,16 @@ fsp_err_t R_IOPORT_PortWrite (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, 
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS((port >> IOPORT_PRV_PORT_OFFSET) & IOPORT_PRV_8BIT_MASK);
 
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+
+    /* Reset data in PORR, set data in POSR register */
+    p_ioport_regs->PORR = (uint16_t) clrbits;
+    p_ioport_regs->POSR = (uint16_t) setbits;
+#else
+
     /* PCNTR3 register: lower word = set data, upper word = reset_data */
     p_ioport_regs->PCNTR3 = (uint32_t) (((uint32_t) clrbits << 16) | setbits);
+#endif
 
     return FSP_SUCCESS;
 }
@@ -374,8 +380,8 @@ fsp_err_t R_IOPORT_PortWrite (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, 
  *
  * @retval FSP_SUCCESS                  Pin written to
  * @retval FSP_ERR_INVALID_ARGUMENT     The pin and/or level not valid
- * @retval FSP_ERR_NOT_OPEN             The module has not been opene
- * @retval FSP_ERR_ASSERTION            NULL pointerd
+ * @retval FSP_ERR_NOT_OPEN             The module has not been opened
+ * @retval FSP_ERR_ASSERTION            NULL pointer
  *
  * @note This function is re-entrant for different pins. This function makes use of the PCNTR3 register to atomically
  * modify the level on the specified pin on a port.
@@ -407,14 +413,21 @@ fsp_err_t R_IOPORT_PinWrite (ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin
         setbits = pin_mask;
     }
 
-    /* PCNTR register is updated instead of using PFS as access is atomic and PFS requires seperate enable/disable
+    /* PCNTR register is updated instead of using PFS as access is atomic and PFS requires separate enable/disable
      * using PWPR register */
 
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS((port >> IOPORT_PRV_PORT_OFFSET) & IOPORT_PRV_8BIT_MASK);
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+
+    /* Reset data in PORR, set data in POSR register */
+    p_ioport_regs->PORR = (uint16_t) clrbits;
+    p_ioport_regs->POSR = (uint16_t) setbits;
+#else
 
     /* PCNTR3 register: lower word = set data, upper word = reset_data */
     p_ioport_regs->PCNTR3 = (uint32_t) (((uint32_t) clrbits << 16) | setbits);
+#endif
 
     return FSP_SUCCESS;
 }
@@ -456,9 +469,15 @@ fsp_err_t R_IOPORT_PortDirectionSet (ioport_ctrl_t * const p_ctrl,
 
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS((port >> IOPORT_PRV_PORT_OFFSET) & IOPORT_PRV_8BIT_MASK);
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+
+    /* Read current value of PDR register for the specified port */
+    orig_value = p_ioport_regs->PDR;
+#else
 
     /* Read current value of PCNTR1 register for the specified port */
     orig_value = p_ioport_regs->PCNTR1;
+#endif
 
     /* High bits */
     set_bits = direction_values & mask;
@@ -473,8 +492,11 @@ fsp_err_t R_IOPORT_PortDirectionSet (ioport_ctrl_t * const p_ctrl,
 
     /* Clear bits as needed */
     write_value &= ~clr_bits;
-
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+    p_ioport_regs->PDR = (uint16_t) write_value;
+#else
     p_ioport_regs->PCNTR1 = write_value;
+#endif
 
     return FSP_SUCCESS;
 }
@@ -492,22 +514,24 @@ fsp_err_t R_IOPORT_PortDirectionSet (ioport_ctrl_t * const p_ctrl,
  * @retval FSP_ERR_INVALID_ARGUMENT Port not a valid ELC port
  * @retval FSP_ERR_ASSERTION        NULL pointer
  * @retval FSP_ERR_NOT_OPEN         The module has not been opened
+ * @retval FSP_ERR_UNSUPPORTED      Function not supported.
  *
  * @note This function is re-entrant for different ports.
  *
  **********************************************************************************************************************/
 fsp_err_t R_IOPORT_PortEventInputRead (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, ioport_size_t * p_event_data)
 {
-#if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
+#if (3U != BSP_FEATURE_IOPORT_VERSION)
+ #if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
     ioport_instance_ctrl_t * p_instance_ctrl = (ioport_instance_ctrl_t *) p_ctrl;
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ERROR_RETURN(IOPORT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
     FSP_ASSERT(NULL != p_event_data);
     uint32_t port_number = port >> IOPORT_PRV_PORT_OFFSET;
     FSP_ERROR_RETURN((BSP_FEATURE_IOPORT_ELC_PORTS & (1 << port_number)), FSP_ERR_INVALID_ARGUMENT);
-#else
+ #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
-#endif
+ #endif
 
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS(port >> IOPORT_PRV_PORT_OFFSET & IOPORT_PRV_8BIT_MASK);
@@ -516,6 +540,14 @@ fsp_err_t R_IOPORT_PortEventInputRead (ioport_ctrl_t * const p_ctrl, bsp_io_port
     *p_event_data = p_ioport_regs->PCNTR2_b.EIDR;
 
     return FSP_SUCCESS;
+#else
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+    FSP_PARAMETER_NOT_USED(port);
+    FSP_PARAMETER_NOT_USED(p_event_data);
+
+    /* Return the unsupported error. */
+    return FSP_ERR_UNSUPPORTED;
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -528,25 +560,27 @@ fsp_err_t R_IOPORT_PortEventInputRead (ioport_ctrl_t * const p_ctrl, bsp_io_port
  * @retval FSP_ERR_ASSERTION            NULL pointer
  * @retval FSP_ERR_NOT_OPEN             The module has not been opened
  * @retval FSP_ERR_INVALID_ARGUMENT     Port is not valid ELC PORT.
+ * @retval FSP_ERR_UNSUPPORTED          Function not supported.
  *
  * @note This function is re-entrant.
  *
  **********************************************************************************************************************/
 fsp_err_t R_IOPORT_PinEventInputRead (ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t * p_pin_event)
 {
-    ioport_size_t portvalue;
-    ioport_size_t mask;
-
-#if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
+#if (3U != BSP_FEATURE_IOPORT_VERSION)
+ #if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
     ioport_instance_ctrl_t * p_instance_ctrl = (ioport_instance_ctrl_t *) p_ctrl;
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ERROR_RETURN(IOPORT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
     FSP_ASSERT(NULL != p_pin_event);
     uint32_t port_number = pin >> IOPORT_PRV_PORT_OFFSET;
     FSP_ERROR_RETURN((BSP_FEATURE_IOPORT_ELC_PORTS & (1 << port_number)), FSP_ERR_INVALID_ARGUMENT);
-#else
+ #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
-#endif
+ #endif
+
+    ioport_size_t portvalue;
+    ioport_size_t mask;
 
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS((pin >> IOPORT_PRV_PORT_OFFSET) & IOPORT_PRV_8BIT_MASK);
@@ -565,6 +599,14 @@ fsp_err_t R_IOPORT_PinEventInputRead (ioport_ctrl_t * const p_ctrl, bsp_io_port_
     }
 
     return FSP_SUCCESS;
+#else
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+    FSP_PARAMETER_NOT_USED(pin);
+    FSP_PARAMETER_NOT_USED(p_pin_event);
+
+    /* Return the unsupported error. */
+    return FSP_ERR_UNSUPPORTED;
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -611,9 +653,16 @@ fsp_err_t R_IOPORT_PortEventOutputWrite (ioport_ctrl_t * const p_ctrl,
 
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS((port >> IOPORT_PRV_PORT_OFFSET) & IOPORT_PRV_8BIT_MASK);
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+
+    /* Reset data in EORR, set data in EOSR register */
+    p_ioport_regs->EOSR = (uint16_t) set_bits;
+    p_ioport_regs->EORR = (uint16_t) reset_bits;
+#else
 
     /* PCNTR4 register: lower word = set data, upper word = reset_data */
     p_ioport_regs->PCNTR4 = (uint32_t) (((uint32_t) reset_bits << 16) | set_bits);
+#endif
 
     return FSP_SUCCESS;
 }
@@ -645,63 +694,8 @@ fsp_err_t R_IOPORT_PinEventOutputWrite (ioport_ctrl_t * const p_ctrl, bsp_io_por
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
 
-    ioport_size_t set_bits;
-    ioport_size_t reset_bits;
-    bsp_io_port_t port;
-    uint16_t      pin_to_port;
-
-    /* Cast to ensure correct conversion of parameter. */
-    pin_to_port = (uint16_t) pin;
-    pin_to_port = pin_to_port & (uint16_t) IOPORT_PRV_PORT_BITS;
-    port        = (bsp_io_port_t) pin_to_port;
-    set_bits    = (ioport_size_t) 0;
-    reset_bits  = (ioport_size_t) 0;
-
-    if (BSP_IO_LEVEL_HIGH == pin_value)
-    {
-        /* Cast to ensure size */
-        set_bits = (ioport_size_t) (1U << ((ioport_size_t) pin & IOPORT_PRV_PIN_BITS));
-    }
-    else
-    {
-        /* Cast to ensure size */
-        reset_bits = (ioport_size_t) (1U << ((ioport_size_t) pin & IOPORT_PRV_PIN_BITS));
-    }
-
-    r_ioport_hw_pin_event_output_data_write(port, set_bits, reset_bits, pin_value);
-
-    return FSP_SUCCESS;
-}
-
-/***********************************************************************************************************************
- * DEPRECATED Configures Ethernet channel PHY mode. Implements @ref ioport_api_t::pinEthernetModeCfg.
- *
- * @retval FSP_SUCCESS              Ethernet PHY mode set
- * @retval FSP_ERR_INVALID_ARGUMENT Channel or mode not valid
- * @retval FSP_ERR_UNSUPPORTED      Ethernet configuration not supported on this device.
- * @retval FSP_ERR_NOT_OPEN         The module has not been opened
- * @retval FSP_ERR_ASSERTION        NULL pointer
- *
- * @note This function is not re-entrant.
- **********************************************************************************************************************/
-fsp_err_t R_IOPORT_EthernetModeCfg (ioport_ctrl_t * const     p_ctrl,
-                                    ioport_ethernet_channel_t channel,
-                                    ioport_ethernet_mode_t    mode)
-{
-    FSP_ERROR_RETURN(1U == BSP_FEATURE_IOPORT_HAS_ETHERNET, FSP_ERR_UNSUPPORTED);
-
-#if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
-    ioport_instance_ctrl_t * p_instance_ctrl = (ioport_instance_ctrl_t *) p_ctrl;
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(IOPORT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(channel < IOPORT_ETHERNET_CHANNEL_END, FSP_ERR_INVALID_ARGUMENT);
-    FSP_ERROR_RETURN(mode < IOPORT_ETHERNET_MODE_END, FSP_ERR_INVALID_ARGUMENT);
-#else
-    FSP_PARAMETER_NOT_USED(p_ctrl);
-    FSP_PARAMETER_NOT_USED(channel);
-#endif
-
-    R_PMISC->PFENET = (uint8_t) mode;
+    r_ioport_hw_pin_event_output_data_write((bsp_io_port_t) (pin & IOPORT_PRV_PORT_BITS),
+                                            (ioport_size_t) (pin & IOPORT_PRV_PIN_BITS), pin_value);
 
     return FSP_SUCCESS;
 }
@@ -721,7 +715,7 @@ fsp_err_t R_IOPORT_EthernetModeCfg (ioport_ctrl_t * const     p_ctrl,
  **********************************************************************************************************************/
 void r_ioport_pins_config (const ioport_cfg_t * p_cfg)
 {
-#if BSP_MCU_VBATT_SUPPORT
+#if BSP_FEATURE_SYSC_HAS_VBTICTLR || BSP_FEATURE_RTC_HAS_TCEN
 
     /* Handle any VBATT domain pin configuration. */
     bsp_vbatt_init(p_cfg);
@@ -747,43 +741,46 @@ void r_ioport_pins_config (const ioport_cfg_t * p_cfg)
  * pin output level.
  *
  * @param[in]    port           Port to read event data
- * @param[in]    set_value      Bit in the port to set high (1 = that bit will be set high)
- * @param[in]    reset_value    Bit in the port to clear low (1 = that bit will be cleared low)
+ * @param[in]    pin            Bit in the EORR/EOSR to be set
  * @param[in]    pin_level      Event data for pin
  **********************************************************************************************************************/
-static void r_ioport_hw_pin_event_output_data_write (bsp_io_port_t  port,
-                                                     ioport_size_t  set_value,
-                                                     ioport_size_t  reset_value,
-                                                     bsp_io_level_t pin_level)
+static void r_ioport_hw_pin_event_output_data_write (bsp_io_port_t port, ioport_size_t pin, bsp_io_level_t pin_level)
 {
-    uint32_t port_value = 0;
-
     /* Get the port address */
     R_PORT0_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS((port >> IOPORT_PRV_PORT_OFFSET) & IOPORT_PRV_8BIT_MASK);
 
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+    uint16_t set_value_high = (uint16_t) (pin_level << pin);
+    uint16_t set_value_low  = (uint16_t) ((!pin_level) << pin);
+
+    /* Ensure the same bits are not set in both registers */
+    p_ioport_regs->EORR &= ~set_value_high;
+    p_ioport_regs->EOSR  = (p_ioport_regs->EOSR & ~set_value_low) | set_value_high;
+    p_ioport_regs->EORR |= set_value_low;
+#else
+    uint32_t set_value = (uint32_t) (1 << pin);
+
     /* Read current value of PCNTR4 register */
-    port_value = p_ioport_regs->PCNTR4;
+    uint32_t port_value = p_ioport_regs->PCNTR4;
 
     if (BSP_IO_LEVEL_HIGH == pin_level)
     {
-        /* set value contains the bit to be set high (bit mask) */
-        port_value |= (uint32_t) (set_value);
+        /* To avoid setting bit high in both EOSR and EORR */
+        port_value &= ~(set_value << 16);
 
-        /* reset value contains the mask to clear the corresponding bit in EOSR because both EOSR and EORR
-         *  bit of a particular pin should not be high at the same time */
-        port_value &= (((uint32_t) reset_value << 16) | IOPORT_PRV_16BIT_MASK);
+        /* Set output high */
+        port_value |= set_value;
     }
     else
     {
-        /* reset_value contains the bit to be cleared low */
-        port_value |= (uint32_t) reset_value << 16;
+        /* To avoid setting bit high in both EOSR and EORR */
+        port_value &= ~set_value;
 
-        /* set value contains the mask to clear the corresponding bit in EOSR because both EOSR and EORR bit of a
-         *  particular pin should not be high at the same time */
-        port_value &= (uint32_t) ((set_value | IOPORT_PRV_UPPER_16BIT_MASK));
+        /* Set output low */
+        port_value |= set_value << 16;
     }
-
     p_ioport_regs->PCNTR4 = port_value;
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -795,6 +792,8 @@ static void r_ioport_hw_pin_event_output_data_write (bsp_io_port_t  port,
  **********************************************************************************************************************/
 static void r_ioport_pfs_write (bsp_io_port_pin_t pin, uint32_t value)
 {
+#if (3U != BSP_FEATURE_IOPORT_VERSION)
+
     /* PMR bits should be cleared before specifying PSEL. Reference section "20.7 Notes on the PmnPFS Register Setting"
      * in the RA6M3 manual R01UH0886EJ0100. */
     if ((value & IOPORT_PRV_PERIPHERAL_FUNCTION) > 0)
@@ -810,9 +809,14 @@ static void r_ioport_pfs_write (bsp_io_port_pin_t pin, uint32_t value)
 
     /* Write configuration */
     R_PFS->PORT[pin >> IOPORT_PRV_PORT_OFFSET].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = value;
+#else
+
+    /* Write configuration */
+    R_PFS->PORT[pin >> IOPORT_PRV_PORT_OFFSET].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = (uint16_t) value;
+#endif
 }
 
-#if BSP_MCU_VBATT_SUPPORT
+#if BSP_FEATURE_SYSC_HAS_VBTICTLR || BSP_FEATURE_RTC_HAS_TCEN
 
 /*******************************************************************************************************************//**
  * @brief Initializes VBTICTLR register based on pin configuration.
@@ -826,12 +830,35 @@ static void bsp_vbatt_init (ioport_cfg_t const * const p_pin_cfg)
 {
     uint32_t pin_index;
     uint32_t vbatt_index;
-    uint8_t  local_vbtictlr_set;       ///< Will hold bits to set in VBTICTLR
-    uint8_t  local_vbtictlr_clear;     ///< Will hold bits to clear in VBTICTLR
 
-    /* Make no changes unless required. */
-    local_vbtictlr_set   = 0U;
-    local_vbtictlr_clear = 0U;
+ #if BSP_FEATURE_SYSC_HAS_VBTICTLR
+    R_SYSTEM_Type * p_system = R_SYSTEM;
+ #endif
+ #if BSP_FEATURE_RTC_HAS_TCEN
+    R_RTC_Type * p_rtc = R_RTC;
+ #endif
+
+ #if BSP_TZ_SECURE_BUILD && BSP_FEATURE_TZ_NS_OFFSET > 0
+  #if BSP_FEATURE_SYSC_HAS_VBTICTLR
+    if (1 == R_SYSTEM->BBFSAR_b.NONSEC2)
+    {
+        /* If security attribution of VBTICTLR is set to non-secure, then use the non-secure alias. */
+        p_system = (R_SYSTEM_Type *) ((uint32_t) p_system | BSP_FEATURE_TZ_NS_OFFSET);
+    }
+  #endif
+
+  #if BSP_FEATURE_RTC_HAS_TCEN
+   #if (BSP_FEATURE_TZ_NS_OFFSET == 0)
+    if (1 == R_PSCU->PSARE_b.PSARE2)
+   #else
+    if (1 == R_PSCU->PSARE_b.PSARE3)
+   #endif
+    {
+        /* If security attribution of RTC is set to non-secure, then use the non-secure alias. */
+        p_rtc = (R_RTC_Type *) ((uint32_t) p_rtc | BSP_FEATURE_TZ_NS_OFFSET);
+    }
+  #endif
+ #endif
 
     /* Must loop over all pins as pin configuration table is unordered. */
     for (pin_index = 0U; pin_index < p_pin_cfg->number_of_pins; pin_index++)
@@ -850,29 +877,100 @@ static void bsp_vbatt_init (ioport_cfg_t const * const p_pin_cfg)
                 if ((IOPORT_PERIPHERAL_AGT == pfs_psel_value) || (IOPORT_PERIPHERAL_CLKOUT_COMP_RTC == pfs_psel_value))
                 {
                     /* Bit should be set to 1. */
-                    local_vbtictlr_set |= (uint8_t) (1U << vbatt_index);
+ #if BSP_FEATURE_SYSC_HAS_VBTICTLR
+  #if BSP_TZ_NONSECURE_BUILD
+                    if (0 == R_SYSTEM->BBFSAR_b.NONSEC2)
+                    {
+                        /* Do nothing: non secure build can't configure secure VBTICTLR register. */
+                    }
+                    else
+  #endif
+                    if (0 == (p_system->VBTICTLR & (uint8_t) (1U << vbatt_index)))
+                    {
+                        R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_OM_LPC_BATT);
+                        p_system->VBTICTLR |= (uint8_t) (1U << vbatt_index);
+                        R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_OM_LPC_BATT);
+                    }
+                    else
+                    {
+                        /* Do nothing: it is already enabled. */
+                    }
+ #endif
+ #if BSP_FEATURE_RTC_HAS_TCEN
+  #if BSP_TZ_NONSECURE_BUILD
+   #if (BSP_FEATURE_TZ_NS_OFFSET == 0)
+                    if (0 == R_PSCU->PSARE_b.PSARE2)
+   #else
+                    if (0 == R_PSCU->PSARE_b.PSARE3)
+   #endif
+                    {
+                        /* Do nothing: non secure build can't configure secure RTC registers. */
+                    }
+                    else
+  #endif
+                    {
+                        if (0 == p_rtc->RTCCR[vbatt_index].RTCCR_b.TCEN)
+                        {
+                            p_rtc->RTCCR[vbatt_index].RTCCR_b.TCEN = 1;
+                            R_BSP_SoftwareDelay(BSP_PRV_RTC_RESET_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
+                        }
+                        else
+                        {
+                            /* Do nothing: it is already enabled. */
+                        }
+                    }
+ #endif
                 }
                 else
                 {
                     /* Bit should be cleared to 0. */
-                    local_vbtictlr_clear |= (uint8_t) (1U << vbatt_index);
+ #if BSP_FEATURE_SYSC_HAS_VBTICTLR
+  #if BSP_TZ_NONSECURE_BUILD
+                    if (0 == R_SYSTEM->BBFSAR_b.NONSEC2)
+                    {
+                        /* Do nothing: non secure build can't configure secure VBTICTLR register. */
+                    }
+                    else
+  #endif
+                    if ((p_system->VBTICTLR & (uint8_t) (1U << vbatt_index)) > 0)
+                    {
+                        R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_OM_LPC_BATT);
+                        p_system->VBTICTLR &= (uint8_t) ~(1U << vbatt_index);
+                        R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_OM_LPC_BATT);
+                    }
+                    else
+                    {
+                        /* Do nothing: it is already disabled. */
+                    }
+ #endif
+ #if BSP_FEATURE_RTC_HAS_TCEN
+  #if BSP_TZ_NONSECURE_BUILD
+   #if (BSP_FEATURE_TZ_NS_OFFSET == 0)
+                    if (0 == R_PSCU->PSARE_b.PSARE2)
+   #else
+                    if (0 == R_PSCU->PSARE_b.PSARE3)
+   #endif
+                    {
+                        /* Do nothing: non secure build can't configure secure RTC registers. */
+                    }
+                    else
+  #endif
+                    {
+                        if (p_rtc->RTCCR[vbatt_index].RTCCR_b.TCEN > 0)
+                        {
+                            p_rtc->RTCCR[vbatt_index].RTCCR_b.TCEN = 0;
+                            R_BSP_SoftwareDelay(BSP_PRV_RTC_RESET_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
+                        }
+                        else
+                        {
+                            /* Do nothing: it is already disabled. */
+                        }
+                    }
+ #endif
                 }
             }
         }
     }
-
-    /* Disable write protection on VBTICTLR. */
-    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_OM_LPC_BATT);
-
-    /* Read value, set and clear bits as needed and write back. */
-    uint8_t local_vbtictlr = R_SYSTEM->VBTICTLR;
-    local_vbtictlr |= local_vbtictlr_set;              ///< Set appropriate bits
-    local_vbtictlr &= (uint8_t) ~local_vbtictlr_clear; ///< Clear appropriate bits
-
-    R_SYSTEM->VBTICTLR = local_vbtictlr;
-
-    /* Enable write protection on VBTICTLR. */
-    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_OM_LPC_BATT);
 }
 
 #endif

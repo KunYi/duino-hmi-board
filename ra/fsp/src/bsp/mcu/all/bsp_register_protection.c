@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -66,7 +66,7 @@ static const uint16_t g_prcr_masks[] =
  *
  * @param[in] regs_to_protect Registers which have write protection enabled.
  **********************************************************************************************************************/
-void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
+BSP_SECTION_FLASH_GAP void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
 {
     /** Get/save the current state of interrupts */
     FSP_CRITICAL_SECTION_DEFINE;
@@ -82,11 +82,15 @@ void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
     /* Is it safe to disable write access? */
     if (0U == g_protect_counters[regs_to_protect])
     {
-        /** Enable protection using PRCR register. */
-
-        /** When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
+        /** Enable protection using PRCR register.
+         *
+         * When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
          * disable writes. */
+#if BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_VERSION == 2
+        R_SYSTEM->PRCR_NS = ((R_SYSTEM->PRCR_NS | BSP_PRV_PRCR_KEY) & (uint16_t) (~g_prcr_masks[regs_to_protect]));
+#else
         R_SYSTEM->PRCR = ((R_SYSTEM->PRCR | BSP_PRV_PRCR_KEY) & (uint16_t) (~g_prcr_masks[regs_to_protect]));
+#endif
     }
 
     /** Restore the interrupt state */
@@ -99,7 +103,7 @@ void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
  *
  * @param[in] regs_to_unprotect Registers which have write protection disabled.
  **********************************************************************************************************************/
-void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
+BSP_SECTION_FLASH_GAP void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
 {
     /** Get/save the current state of interrupts */
     FSP_CRITICAL_SECTION_DEFINE;
@@ -108,11 +112,15 @@ void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
     /* If this is first entry then disable protection. */
     if (0U == g_protect_counters[regs_to_unprotect])
     {
-        /** Disable protection using PRCR register. */
-
-        /** When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
+        /** Disable protection using PRCR register.
+         *
+         * When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
          * disable writes. */
+#if BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_VERSION == 2
+        R_SYSTEM->PRCR_NS = ((R_SYSTEM->PRCR_NS | BSP_PRV_PRCR_KEY) | g_prcr_masks[regs_to_unprotect]);
+#else
         R_SYSTEM->PRCR = ((R_SYSTEM->PRCR | BSP_PRV_PRCR_KEY) | g_prcr_masks[regs_to_unprotect]);
+#endif
     }
 
     /** Increment the protect counter */

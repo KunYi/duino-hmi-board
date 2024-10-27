@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -18,43 +18,42 @@
  * OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
  **********************************************************************************************************************/
 
+/**********************************************************************************************************************
+ * File Name    : r_usb_hhid.h
+ * Description  : USB HHID public APIs.
+ **********************************************************************************************************************/
+
 /*******************************************************************************************************************//**
- * @ingroup BOARD_RA6M4_CPK
- * @defgroup BOARD_RA6M4_CPK_ETHERNET_PHY Board Ethernet Phy
- * @brief Ethernet Phy information for this board.
- *
- * This is code specific to the RA6M4_CPK board.
- *
+ * @addtogroup USB_HHID
  * @{
  **********************************************************************************************************************/
 
-#ifndef BSP_ETHERNET_PHY_H
-#define BSP_ETHERNET_PHY_H
+#ifndef USB_HHID_H
+#define USB_HHID_H
 
-/** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+/******************************************************************************
+ * Includes   <System Includes> , "Project Includes"
+ ******************************************************************************/
+#include "r_usb_hhid_cfg.h"
+#include "r_usb_basic_api.h"
+
+/* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
-/***********************************************************************************************************************
- * Macro definitions
- **********************************************************************************************************************/
-#define BOARD_PHY_TYPE       (0)
-#define BOARD_PHY_REF_CLK    (1)
-
-/***********************************************************************************************************************
- * Typedef definitions
- **********************************************************************************************************************/
-
-/***********************************************************************************************************************
- * Exported global variables
- **********************************************************************************************************************/
-
-/***********************************************************************************************************************
- * Public Functions
- **********************************************************************************************************************/
+/******************************************************************************
+ * Exported global functions (to be accessed by other files)
+ ******************************************************************************/
+fsp_err_t R_USB_HHID_TypeGet(usb_ctrl_t * const p_api_ctrl, uint8_t * p_type, uint8_t device_address);
+fsp_err_t R_USB_HHID_MaxPacketSizeGet(usb_ctrl_t * const p_api_ctrl,
+                                      uint16_t         * p_size,
+                                      uint8_t            direction,
+                                      uint8_t            device_address);
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
-#endif
+#endif                                 /* USB_HHID_H */
 
-/** @} (end defgroup BOARD_RA6M4_CPK_ETHERNET_PHY) */
+/*******************************************************************************************************************//**
+ * @} (end addtogroup USB_HHID)
+ **********************************************************************************************************************/

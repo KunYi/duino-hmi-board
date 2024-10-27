@@ -1,742 +1,386 @@
 /* generated HAL source file - do not edit */
 #include "hal_data.h"
 
+usb_instance_ctrl_t g_basic0_ctrl;
 
-gpt_instance_ctrl_t g_timer5_ctrl;
-#if 0
-const gpt_extended_pwm_cfg_t g_timer5_pwm_extend =
-{
-    .trough_ipl          = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT5_COUNTER_UNDERFLOW)
-    .trough_irq          = VECTOR_NUMBER_GPT5_COUNTER_UNDERFLOW,
-#else
-    .trough_irq          = FSP_INVALID_VECTOR,
+#if !defined(NULL)
+extern usb_descriptor_t NULL;
 #endif
-    .poeg_link           = GPT_POEG_LINK_POEG0,
-    .output_disable      =  GPT_OUTPUT_DISABLE_NONE,
-    .adc_trigger         =  GPT_ADC_TRIGGER_NONE,
-    .dead_time_count_up  = 0,
-    .dead_time_count_down = 0,
-    .adc_a_compare_match = 0,
-    .adc_b_compare_match = 0,
-    .interrupt_skip_source = GPT_INTERRUPT_SKIP_SOURCE_NONE,
-    .interrupt_skip_count  = GPT_INTERRUPT_SKIP_COUNT_0,
-    .interrupt_skip_adc    = GPT_INTERRUPT_SKIP_ADC_NONE,
-    .gtioca_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
-    .gtiocb_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
-};
-#endif
-const gpt_extended_cfg_t g_timer5_extend =
-{
-    .gtioca = { .output_enabled = true,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .gtiocb = { .output_enabled = true,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .start_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .stop_source         = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .clear_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_up_source     = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_down_source   = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_b_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_ipl       = (BSP_IRQ_DISABLED),
-    .capture_b_ipl       = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_A)
-    .capture_a_irq       = VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_A,
-#else
-    .capture_a_irq       = FSP_INVALID_VECTOR,
-#endif
-#if defined(VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_B)
-    .capture_b_irq       = VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_B,
-#else
-    .capture_b_irq       = FSP_INVALID_VECTOR,
-#endif
-    .capture_filter_gtioca       = GPT_CAPTURE_FILTER_NONE,
-    .capture_filter_gtiocb       = GPT_CAPTURE_FILTER_NONE,
-#if 0
-    .p_pwm_cfg                   = &g_timer5_pwm_extend,
-#else
-    .p_pwm_cfg                   = NULL,
-#endif
-#if 0
-    .gtior_setting.gtior_b.gtioa  = (0U << 4U) | (0U << 2U) | (0U << 0U),
-    .gtior_setting.gtior_b.oadflt = (uint32_t) GPT_PIN_LEVEL_LOW,
-    .gtior_setting.gtior_b.oahld  = 0U,
-    .gtior_setting.gtior_b.oae    = (uint32_t) true,
-    .gtior_setting.gtior_b.oadf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
-    .gtior_setting.gtior_b.nfaen  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
-    .gtior_setting.gtior_b.nfcsa  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
-    .gtior_setting.gtior_b.gtiob  = (0U << 4U) | (0U << 2U) | (0U << 0U),
-    .gtior_setting.gtior_b.obdflt = (uint32_t) GPT_PIN_LEVEL_LOW,
-    .gtior_setting.gtior_b.obhld  = 0U,
-    .gtior_setting.gtior_b.obe    = (uint32_t) true,
-    .gtior_setting.gtior_b.obdf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
-    .gtior_setting.gtior_b.nfben  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
-    .gtior_setting.gtior_b.nfcsb  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
-#else
-    .gtior_setting.gtior = 0U,
-#endif
-};
-const timer_cfg_t g_timer5_cfg =
-{
-    .mode                = TIMER_MODE_PWM,
-    /* Actual period: 0.00008333333333333333 seconds. Actual duty: 50%. */ .period_counts = (uint32_t) 0x2710, .duty_cycle_counts = 0x1388, .source_div = (timer_source_div_t)0,
-    .channel             = 5,
-    .p_callback          = NULL,
-    /** If NULL then do not add & */
-#if defined(NULL)
-    .p_context           = NULL,
-#else
-    .p_context           = &NULL,
-#endif
-    .p_extend            = &g_timer5_extend,
-    .cycle_end_ipl       = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT5_COUNTER_OVERFLOW)
-    .cycle_end_irq       = VECTOR_NUMBER_GPT5_COUNTER_OVERFLOW,
-#else
-    .cycle_end_irq       = FSP_INVALID_VECTOR,
-#endif
-};
-/* Instance structure to use this module. */
-const timer_instance_t g_timer5 =
-{
-    .p_ctrl        = &g_timer5_ctrl,
-    .p_cfg         = &g_timer5_cfg,
-    .p_api         = &g_timer_on_gpt
-};
-gpt_instance_ctrl_t g_timer_ctrl;
-#if 0
-const gpt_extended_pwm_cfg_t g_timer_pwm_extend =
-{
-    .trough_ipl          = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT1_COUNTER_UNDERFLOW)
-    .trough_irq          = VECTOR_NUMBER_GPT1_COUNTER_UNDERFLOW,
-#else
-    .trough_irq          = FSP_INVALID_VECTOR,
-#endif
-    .poeg_link           = GPT_POEG_LINK_POEG0,
-    .output_disable      =  GPT_OUTPUT_DISABLE_NONE,
-    .adc_trigger         =  GPT_ADC_TRIGGER_NONE,
-    .dead_time_count_up  = 0,
-    .dead_time_count_down = 0,
-    .adc_a_compare_match = 0,
-    .adc_b_compare_match = 0,
-    .interrupt_skip_source = GPT_INTERRUPT_SKIP_SOURCE_NONE,
-    .interrupt_skip_count  = GPT_INTERRUPT_SKIP_COUNT_0,
-    .interrupt_skip_adc    = GPT_INTERRUPT_SKIP_ADC_NONE,
-    .gtioca_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
-    .gtiocb_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
-};
-#endif
-const gpt_extended_cfg_t g_timer_extend =
-{
-    .gtioca = { .output_enabled = true,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .gtiocb = { .output_enabled = false,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .start_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .stop_source         = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .clear_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_up_source     = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_down_source   = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_b_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_ipl       = (BSP_IRQ_DISABLED),
-    .capture_b_ipl       = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_A)
-    .capture_a_irq       = VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_A,
-#else
-    .capture_a_irq       = FSP_INVALID_VECTOR,
-#endif
-#if defined(VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_B)
-    .capture_b_irq       = VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_B,
-#else
-    .capture_b_irq       = FSP_INVALID_VECTOR,
-#endif
-    .capture_filter_gtioca       = GPT_CAPTURE_FILTER_NONE,
-    .capture_filter_gtiocb       = GPT_CAPTURE_FILTER_NONE,
-#if 0
-    .p_pwm_cfg                   = &g_timer_pwm_extend,
-#else
-    .p_pwm_cfg                   = NULL,
-#endif
-#if 0
-    .gtior_setting.gtior_b.gtioa  = (0U << 4U) | (0U << 2U) | (0U << 0U),
-    .gtior_setting.gtior_b.oadflt = (uint32_t) GPT_PIN_LEVEL_LOW,
-    .gtior_setting.gtior_b.oahld  = 0U,
-    .gtior_setting.gtior_b.oae    = (uint32_t) true,
-    .gtior_setting.gtior_b.oadf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
-    .gtior_setting.gtior_b.nfaen  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
-    .gtior_setting.gtior_b.nfcsa  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
-    .gtior_setting.gtior_b.gtiob  = (0U << 4U) | (0U << 2U) | (0U << 0U),
-    .gtior_setting.gtior_b.obdflt = (uint32_t) GPT_PIN_LEVEL_LOW,
-    .gtior_setting.gtior_b.obhld  = 0U,
-    .gtior_setting.gtior_b.obe    = (uint32_t) false,
-    .gtior_setting.gtior_b.obdf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
-    .gtior_setting.gtior_b.nfben  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
-    .gtior_setting.gtior_b.nfcsb  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
-#else
-    .gtior_setting.gtior = 0U,
-#endif
-};
-const timer_cfg_t g_timer_cfg =
-{
-    .mode                = TIMER_MODE_PERIODIC,
-    /* Actual period: 3.25e-7 seconds. Actual duty: 48.717948717948715%. */ .period_counts = (uint32_t) 0x27, .duty_cycle_counts = 0x13, .source_div = (timer_source_div_t)0,
-    .channel             = 1,
-    .p_callback          = NULL,
-    /** If NULL then do not add & */
-#if defined(NULL)
-    .p_context           = NULL,
-#else
-    .p_context           = &NULL,
-#endif
-    .p_extend            = &g_timer_extend,
-    .cycle_end_ipl       = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT1_COUNTER_OVERFLOW)
-    .cycle_end_irq       = VECTOR_NUMBER_GPT1_COUNTER_OVERFLOW,
-#else
-    .cycle_end_irq       = FSP_INVALID_VECTOR,
-#endif
-};
-/* Instance structure to use this module. */
-const timer_instance_t g_timer =
-{
-    .p_ctrl        = &g_timer_ctrl,
-    .p_cfg         = &g_timer_cfg,
-    .p_api         = &g_timer_on_gpt
-};
-dtc_instance_ctrl_t g_transfer10_ctrl;
-
-transfer_info_t g_transfer10_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_INCREMENTED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_DESTINATION,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_FIXED,
-    .size                = TRANSFER_SIZE_4_BYTE,
-    .mode                = TRANSFER_MODE_BLOCK,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
-const dtc_extended_cfg_t g_transfer10_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SSI0_RXI,
-};
-const transfer_cfg_t g_transfer10_cfg =
-{
-    .p_info              = &g_transfer10_info,
-    .p_extend            = &g_transfer10_cfg_extend,
-};
-
-/* Instance structure to use this module. */
-const transfer_instance_t g_transfer10 =
-{
-    .p_ctrl        = &g_transfer10_ctrl,
-    .p_cfg         = &g_transfer10_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
-ssi_instance_ctrl_t     g_i2s0_ctrl;
-
-            /** SSI instance configuration */
-            const ssi_extended_cfg_t g_i2s0_cfg_extend =
-            {
-                .audio_clock         = SSI_AUDIO_CLOCK_INTERNAL,
-                .bit_clock_div       = SSI_CLOCK_DIV_1,
-            };
-
-            /** I2S interface configuration */
-            const i2s_cfg_t g_i2s0_cfg =
-            {
-                .channel             = 0,
-                .pcm_width           = I2S_PCM_WIDTH_24_BITS,
-                .operating_mode      = I2S_MODE_MASTER,
-                .word_length         = I2S_WORD_LENGTH_32_BITS,
-                .ws_continue         = I2S_WS_CONTINUE_OFF,
-                .p_callback          = i2s_callback,
-                .p_context           = NULL,
-                .p_extend            = &g_i2s0_cfg_extend,
-#if (BSP_IRQ_DISABLED) != BSP_IRQ_DISABLED
-  #if 0 == 0
-                .txi_irq                 = VECTOR_NUMBER_SSI0_TXI,
-  #else
-                .txi_irq                 = VECTOR_NUMBER_SSI0_TXI_RXI,
-  #endif
-#else
-                .txi_irq                 = FSP_INVALID_VECTOR,
-#endif
-#if (2) != BSP_IRQ_DISABLED
-  #if 0 == 0
-                .rxi_irq                 = VECTOR_NUMBER_SSI0_RXI,
-  #else
-                .rxi_irq                 = VECTOR_NUMBER_SSI0_TXI_RXI,
-  #endif
-#else
-                .rxi_irq                 = FSP_INVALID_VECTOR,
-#endif
-#if defined(VECTOR_NUMBER_SSI0_INT)
-                .int_irq                 = VECTOR_NUMBER_SSI0_INT,
-#else
-                .int_irq                 = FSP_INVALID_VECTOR,
-#endif
-                .txi_ipl             = (BSP_IRQ_DISABLED),
-                .rxi_ipl             = (2),
-                .idle_err_ipl        = (2),
 #define RA_NOT_DEFINED (1)
-#if (RA_NOT_DEFINED == RA_NOT_DEFINED)
-                .p_transfer_tx       = NULL,
+const usb_cfg_t g_basic0_cfg =
+{ .usb_mode = USB_MODE_HOST,
+  .usb_speed = USB_SPEED_FS,
+  .module_number = 0,
+  .type = USB_CLASS_HHID,
+#if defined(NULL)
+                .p_usb_reg = NULL,
 #else
-                .p_transfer_tx       = &RA_NOT_DEFINED,
+  .p_usb_reg = &NULL,
 #endif
-#if (RA_NOT_DEFINED == g_transfer10)
-                .p_transfer_rx       = NULL,
+  .usb_complience_cb = NULL,
+#if defined(VECTOR_NUMBER_USBFS_INT)
+                .irq       = VECTOR_NUMBER_USBFS_INT,
 #else
-                .p_transfer_rx       = &g_transfer10,
+  .irq = FSP_INVALID_VECTOR,
 #endif
+#if defined(VECTOR_NUMBER_USBFS_RESUME)
+                .irq_r     = VECTOR_NUMBER_USBFS_RESUME,
+#else
+  .irq_r = FSP_INVALID_VECTOR,
+#endif
+  .irq_d0 = FSP_INVALID_VECTOR,
+  .irq_d1 = FSP_INVALID_VECTOR,
+#if defined(VECTOR_NUMBER_USBHS_USB_INT_RESUME)
+                .hsirq     = VECTOR_NUMBER_USBHS_USB_INT_RESUME,
+#else
+  .hsirq = FSP_INVALID_VECTOR,
+#endif
+  .hsirq_d0 = FSP_INVALID_VECTOR,
+  .hsirq_d1 = FSP_INVALID_VECTOR,
+  .ipl = (12),
+  .ipl_r = (12),
+  .ipl_d0 = BSP_IRQ_DISABLED,
+  .ipl_d1 = BSP_IRQ_DISABLED,
+  .hsipl = (BSP_IRQ_DISABLED),
+  .hsipl_d0 = BSP_IRQ_DISABLED,
+  .hsipl_d1 = BSP_IRQ_DISABLED,
+#if (BSP_CFG_RTOS == 0) && defined(USB_CFG_HMSC_USE)
+                .p_usb_apl_callback = NULL,
+#else
+  .p_usb_apl_callback = NULL,
+#endif
+#if defined(NULL)
+                .p_context = NULL,
+#else
+  .p_context = &NULL,
+#endif
+        };
 #undef RA_NOT_DEFINED
-            };
 
 /* Instance structure to use this module. */
-const i2s_instance_t g_i2s0 =
-{
-    .p_ctrl        = &g_i2s0_ctrl,
-    .p_cfg         = &g_i2s0_cfg,
-    .p_api         = &g_i2s_on_ssi
-};
+const usb_instance_t g_basic0 =
+{ .p_ctrl = &g_basic0_ctrl, .p_cfg = &g_basic0_cfg, .p_api = &g_usb_on_usb, };
+
+rtc_instance_ctrl_t g_rtc_ctrl;
+const rtc_error_adjustment_cfg_t g_rtc_err_cfg =
+{ .adjustment_mode = RTC_ERROR_ADJUSTMENT_MODE_AUTOMATIC,
+  .adjustment_period = RTC_ERROR_ADJUSTMENT_PERIOD_10_SECOND,
+  .adjustment_type = RTC_ERROR_ADJUSTMENT_NONE,
+  .adjustment_value = 0, };
+const rtc_cfg_t g_rtc_cfg =
+{ .clock_source = RTC_CLOCK_SOURCE_LOCO, .freq_compare_value = 255, .p_err_cfg = &g_rtc_err_cfg, .p_callback =
+          rtc_callback,
+  .p_context = NULL, .p_extend = NULL, .alarm_ipl = (2), .periodic_ipl = (BSP_IRQ_DISABLED), .carry_ipl = (12),
+#if defined(VECTOR_NUMBER_RTC_ALARM)
+    .alarm_irq               = VECTOR_NUMBER_RTC_ALARM,
+#else
+  .alarm_irq = FSP_INVALID_VECTOR,
+#endif
+#if defined(VECTOR_NUMBER_RTC_PERIOD)
+    .periodic_irq            = VECTOR_NUMBER_RTC_PERIOD,
+#else
+  .periodic_irq = FSP_INVALID_VECTOR,
+#endif
+#if defined(VECTOR_NUMBER_RTC_CARRY)
+    .carry_irq               = VECTOR_NUMBER_RTC_CARRY,
+#else
+  .carry_irq = FSP_INVALID_VECTOR,
+#endif
+        };
+/* Instance structure to use this module. */
+const rtc_instance_t g_rtc =
+{ .p_ctrl = &g_rtc_ctrl, .p_cfg = &g_rtc_cfg, .p_api = &g_rtc_on_rtc };
 ether_phy_instance_ctrl_t g_ether_phy0_ctrl;
+
+const ether_phy_extended_cfg_t g_ether_phy0_extended_cfg =
+{ .p_target_init = NULL, .p_target_link_partner_ability_get = NULL
+
+};
 
 const ether_phy_cfg_t g_ether_phy0_cfg =
 {
 
-    .channel                   = 0,
-    .phy_lsi_address           = 0,
-    .phy_reset_wait_time       = 0x00020000,
-    .mii_bit_access_wait_time  = 8,
-    .flow_control              = ETHER_PHY_FLOW_CONTROL_DISABLE,
-    .mii_type                  = ETHER_PHY_MII_TYPE_RMII,
-    .p_context                 = NULL,
-    .p_extend                  = NULL,
+.channel = 0,
+  .phy_lsi_address = 0, .phy_reset_wait_time = 0x00020000, .mii_bit_access_wait_time = 8, .phy_lsi_type =
+          ETHER_PHY_LSI_TYPE_DEFAULT,
+  .flow_control = ETHER_PHY_FLOW_CONTROL_DISABLE, .mii_type = ETHER_PHY_MII_TYPE_RMII, .p_context = NULL, .p_extend =
+          &g_ether_phy0_extended_cfg,
 
 };
 /* Instance structure to use this module. */
 const ether_phy_instance_t g_ether_phy0 =
-{
-    .p_ctrl        = &g_ether_phy0_ctrl,
-    .p_cfg         = &g_ether_phy0_cfg,
-    .p_api         = &g_ether_phy_on_ether_phy
-};
+{ .p_ctrl = &g_ether_phy0_ctrl, .p_cfg = &g_ether_phy0_cfg, .p_api = &g_ether_phy_on_ether_phy };
 ether_instance_ctrl_t g_ether0_ctrl;
 
-            uint8_t g_ether0_mac_address[6] = { 0x00,0x11,0x22,0x33,0x44,0x55 };
+uint8_t g_ether0_mac_address[6] =
+{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55 };
 
-            __attribute__((__aligned__(16))) ether_instance_descriptor_t g_ether0_tx_descriptors[1] ETHER_BUFFER_PLACE_IN_SECTION;
-            __attribute__((__aligned__(16))) ether_instance_descriptor_t g_ether0_rx_descriptors[1] ETHER_BUFFER_PLACE_IN_SECTION;
+__attribute__((__aligned__(16))) ether_instance_descriptor_t g_ether0_tx_descriptors[1] ETHER_BUFFER_PLACE_IN_SECTION;
+__attribute__((__aligned__(16))) ether_instance_descriptor_t g_ether0_rx_descriptors[1] ETHER_BUFFER_PLACE_IN_SECTION;
 
-            __attribute__((__aligned__(32)))uint8_t g_ether0_ether_buffer0[1536]ETHER_BUFFER_PLACE_IN_SECTION;
+__attribute__((__aligned__(32)))uint8_t g_ether0_ether_buffer0[1536]ETHER_BUFFER_PLACE_IN_SECTION;
 __attribute__((__aligned__(32)))uint8_t g_ether0_ether_buffer1[1536]ETHER_BUFFER_PLACE_IN_SECTION;
 
+uint8_t *pp_g_ether0_ether_buffers[2] =
+{ (uint8_t*) &g_ether0_ether_buffer0[0], (uint8_t*) &g_ether0_ether_buffer1[0], };
 
-            uint8_t *pp_g_ether0_ether_buffers[2] = {
-(uint8_t *) &g_ether0_ether_buffer0[0],
-(uint8_t *) &g_ether0_ether_buffer1[0],
-};
+const ether_extended_cfg_t g_ether0_extended_cfg_t =
+{ .p_rx_descriptors = g_ether0_rx_descriptors, .p_tx_descriptors = g_ether0_tx_descriptors, };
 
-            const ether_cfg_t g_ether0_cfg =
-            {
-                .channel            = 0,
-                .zerocopy           = ETHER_ZEROCOPY_DISABLE,
-                .multicast          = ETHER_MULTICAST_ENABLE,
-                .promiscuous        = ETHER_PROMISCUOUS_DISABLE,
-                .flow_control       = ETHER_FLOW_CONTROL_DISABLE,
-                .padding            = ETHER_PADDING_DISABLE,
-                .padding_offset     = 0,
-                .broadcast_filter   = 0,
-                .p_mac_address      = g_ether0_mac_address,
+const ether_cfg_t g_ether0_cfg =
+{ .channel = 0, .zerocopy = ETHER_ZEROCOPY_DISABLE, .multicast = ETHER_MULTICAST_ENABLE, .promiscuous =
+          ETHER_PROMISCUOUS_DISABLE,
+  .flow_control = ETHER_FLOW_CONTROL_DISABLE, .padding = ETHER_PADDING_DISABLE, .padding_offset = 0, .broadcast_filter =
+          0,
+  .p_mac_address = g_ether0_mac_address,
 
-                .p_rx_descriptors   = g_ether0_rx_descriptors,
-                .p_tx_descriptors   = g_ether0_tx_descriptors,
+  .num_tx_descriptors = 1,
+  .num_rx_descriptors = 1,
 
-                .num_tx_descriptors = 1,
-                .num_rx_descriptors = 1,
+  .pp_ether_buffers = pp_g_ether0_ether_buffers,
 
-                .pp_ether_buffers   = pp_g_ether0_ether_buffers,
-
-                .ether_buffer_size  = 1536,
+  .ether_buffer_size = 1536,
 
 #if defined(VECTOR_NUMBER_EDMAC0_EINT)
                 .irq                = VECTOR_NUMBER_EDMAC0_EINT,
 #else
-                .irq                = FSP_INVALID_VECTOR,
+  .irq = FSP_INVALID_VECTOR,
 #endif
 
-                .interrupt_priority = (12),
+  .interrupt_priority = (12),
 
-                .p_callback         = user_ether0_callback,
-                .p_ether_phy_instance = &g_ether_phy0,
-                .p_context          = NULL,
-                .p_extend           = NULL,
-            };
+  .p_callback = user_ether0_callback,
+  .p_ether_phy_instance = &g_ether_phy0, .p_context = NULL, .p_extend = &g_ether0_extended_cfg_t, };
 
 /* Instance structure to use this module. */
 const ether_instance_t g_ether0 =
-{
-    .p_ctrl        = &g_ether0_ctrl,
-    .p_cfg         = &g_ether0_cfg,
-    .p_api         = &g_ether_on_ether
-};
+{ .p_ctrl = &g_ether0_ctrl, .p_cfg = &g_ether0_cfg, .p_api = &g_ether_on_ether };
 dtc_instance_ctrl_t g_transfer8_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer8_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_INCREMENTED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_DESTINATION,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_FIXED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_DESTINATION,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer8_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer8_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI4_RXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI4_RXI, };
+
 const transfer_cfg_t g_transfer8_cfg =
 {
-    .p_info              = &g_transfer8_info,
-    .p_extend            = &g_transfer8_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer8_info,
+#elif (1 > 1)
+    .p_info              = g_transfer8_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer8_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer8 =
-{
-    .p_ctrl        = &g_transfer8_ctrl,
-    .p_cfg         = &g_transfer8_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer8_ctrl, .p_cfg = &g_transfer8_cfg, .p_api = &g_transfer_on_dtc };
 dtc_instance_ctrl_t g_transfer7_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer7_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_FIXED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_SOURCE,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_INCREMENTED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_SOURCE,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer7_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer7_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI4_TXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI4_TXI, };
+
 const transfer_cfg_t g_transfer7_cfg =
 {
-    .p_info              = &g_transfer7_info,
-    .p_extend            = &g_transfer7_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer7_info,
+#elif (1 > 1)
+    .p_info              = g_transfer7_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer7_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer7 =
-{
-    .p_ctrl        = &g_transfer7_ctrl,
-    .p_cfg         = &g_transfer7_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer7_ctrl, .p_cfg = &g_transfer7_cfg, .p_api = &g_transfer_on_dtc };
 sci_spi_instance_ctrl_t g_sci_spi4_ctrl;
 
 /** SPI extended configuration */
 const sci_spi_extended_cfg_t g_sci_spi4_cfg_extend =
+{ .clk_div =
 {
-    .clk_div = {
-        /* Actual calculated bitrate: 7968750. */ .cks = 0, .brr = 2, .mddr = 204,
-    }
-};
+/* Actual calculated bitrate: 7968750. */.cks = 0,
+  .brr = 2, .mddr = 204, } };
 
 const spi_cfg_t g_sci_spi4_cfg =
-{
-    .channel         = 4,
-    .operating_mode  = SPI_MODE_MASTER,
-    .clk_phase       = SPI_CLK_PHASE_EDGE_ODD,
-    .clk_polarity    = SPI_CLK_POLARITY_LOW,
-    .mode_fault      = SPI_MODE_FAULT_ERROR_DISABLE,
-    .bit_order       = SPI_BIT_ORDER_MSB_FIRST,
+{ .channel = 4, .operating_mode = SPI_MODE_MASTER, .clk_phase = SPI_CLK_PHASE_EDGE_ODD, .clk_polarity =
+          SPI_CLK_POLARITY_LOW,
+  .mode_fault = SPI_MODE_FAULT_ERROR_DISABLE, .bit_order = SPI_BIT_ORDER_MSB_FIRST,
 #define RA_NOT_DEFINED (1)
 #if (RA_NOT_DEFINED == g_transfer7)
     .p_transfer_tx   = NULL,
 #else
-    .p_transfer_tx   = &g_transfer7,
+  .p_transfer_tx = &g_transfer7,
 #endif
 #if (RA_NOT_DEFINED == g_transfer8)
     .p_transfer_rx   = NULL,
 #else
-    .p_transfer_rx   = &g_transfer8,
+  .p_transfer_rx = &g_transfer8,
 #endif
 #undef RA_NOT_DEFINED
-    .p_callback      = sci_spi4_callback,
-    .p_context       = NULL,
-    .rxi_irq         = VECTOR_NUMBER_SCI4_RXI,
-    .txi_irq         = VECTOR_NUMBER_SCI4_TXI,
-    .tei_irq         = VECTOR_NUMBER_SCI4_TEI,
-    .eri_irq         = VECTOR_NUMBER_SCI4_ERI,
-    .rxi_ipl         = (12),
-    .txi_ipl         = (12),
-    .tei_ipl         = (12),
-    .eri_ipl         = (12),
-    .p_extend        = &g_sci_spi4_cfg_extend,
-};
+  .p_callback = sci_spi4_callback,
+  .p_context = NULL, .rxi_irq = VECTOR_NUMBER_SCI4_RXI, .txi_irq = VECTOR_NUMBER_SCI4_TXI, .tei_irq =
+          VECTOR_NUMBER_SCI4_TEI,
+  .eri_irq = VECTOR_NUMBER_SCI4_ERI, .rxi_ipl = (12), .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12), .p_extend =
+          &g_sci_spi4_cfg_extend, };
 /* Instance structure to use this module. */
 const spi_instance_t g_sci_spi4 =
-{
-    .p_ctrl          = &g_sci_spi4_ctrl,
-    .p_cfg           = &g_sci_spi4_cfg,
-    .p_api           = &g_spi_on_sci
-};
-icu_instance_ctrl_t g_external_irq9_ctrl;
-const external_irq_cfg_t g_external_irq9_cfg =
-{
-    .channel             = 9,
-    .trigger             = EXTERNAL_IRQ_TRIG_RISING,
-    .filter_enable       = false,
-    .pclk_div            = EXTERNAL_IRQ_PCLK_DIV_BY_64,
-    .p_callback          = irq_callback,
-    /** If NULL then do not add & */
-#if defined(NULL)
-    .p_context           = NULL,
-#else
-    .p_context           = &NULL,
-#endif
-    .p_extend            = NULL,
-    .ipl                 = (6),
-#if defined(VECTOR_NUMBER_ICU_IRQ9)
-    .irq                 = VECTOR_NUMBER_ICU_IRQ9,
-#else
-    .irq                 = FSP_INVALID_VECTOR,
-#endif
-};
-/* Instance structure to use this module. */
-const external_irq_instance_t g_external_irq9 =
-{
-    .p_ctrl        = &g_external_irq9_ctrl,
-    .p_cfg         = &g_external_irq9_cfg,
-    .p_api         = &g_external_irq_on_icu
-};
-icu_instance_ctrl_t g_external_irq13_ctrl;
-const external_irq_cfg_t g_external_irq13_cfg =
-{
-    .channel             = 13,
-    .trigger             = EXTERNAL_IRQ_TRIG_RISING,
-    .filter_enable       = false,
-    .pclk_div            = EXTERNAL_IRQ_PCLK_DIV_BY_64,
-    .p_callback          = irq_callback,
-    /** If NULL then do not add & */
-#if defined(NULL)
-    .p_context           = NULL,
-#else
-    .p_context           = &NULL,
-#endif
-    .p_extend            = NULL,
-    .ipl                 = (12),
-#if defined(VECTOR_NUMBER_ICU_IRQ13)
-    .irq                 = VECTOR_NUMBER_ICU_IRQ13,
-#else
-    .irq                 = FSP_INVALID_VECTOR,
-#endif
-};
-/* Instance structure to use this module. */
-const external_irq_instance_t g_external_irq13 =
-{
-    .p_ctrl        = &g_external_irq13_ctrl,
-    .p_cfg         = &g_external_irq13_cfg,
-    .p_api         = &g_external_irq_on_icu
-};
-icu_instance_ctrl_t g_external_irq11_ctrl;
-const external_irq_cfg_t g_external_irq11_cfg =
-{
-    .channel             = 11,
-    .trigger             = EXTERNAL_IRQ_TRIG_BOTH_EDGE,
-    .filter_enable       = false,
-    .pclk_div            = EXTERNAL_IRQ_PCLK_DIV_BY_64,
-    .p_callback          = irq_callback,
-    /** If NULL then do not add & */
-#if defined(NULL)
-    .p_context           = NULL,
-#else
-    .p_context           = &NULL,
-#endif
-    .p_extend            = NULL,
-    .ipl                 = (12),
-#if defined(VECTOR_NUMBER_ICU_IRQ11)
-    .irq                 = VECTOR_NUMBER_ICU_IRQ11,
-#else
-    .irq                 = FSP_INVALID_VECTOR,
-#endif
-};
-/* Instance structure to use this module. */
-const external_irq_instance_t g_external_irq11 =
-{
-    .p_ctrl        = &g_external_irq11_ctrl,
-    .p_cfg         = &g_external_irq11_cfg,
-    .p_api         = &g_external_irq_on_icu
-};
-icu_instance_ctrl_t g_external_irq10_ctrl;
-const external_irq_cfg_t g_external_irq10_cfg =
-{
-    .channel             = 10,
-    .trigger             = EXTERNAL_IRQ_TRIG_BOTH_EDGE,
-    .filter_enable       = false,
-    .pclk_div            = EXTERNAL_IRQ_PCLK_DIV_BY_64,
-    .p_callback          = irq_callback,
-    /** If NULL then do not add & */
-#if defined(NULL)
-    .p_context           = NULL,
-#else
-    .p_context           = &NULL,
-#endif
-    .p_extend            = NULL,
-    .ipl                 = (12),
-#if defined(VECTOR_NUMBER_ICU_IRQ10)
-    .irq                 = VECTOR_NUMBER_ICU_IRQ10,
-#else
-    .irq                 = FSP_INVALID_VECTOR,
-#endif
-};
-/* Instance structure to use this module. */
-const external_irq_instance_t g_external_irq10 =
-{
-    .p_ctrl        = &g_external_irq10_ctrl,
-    .p_cfg         = &g_external_irq10_cfg,
-    .p_api         = &g_external_irq_on_icu
-};
+{ .p_ctrl = &g_sci_spi4_ctrl, .p_cfg = &g_sci_spi4_cfg, .p_api = &g_spi_on_sci };
 dtc_instance_ctrl_t g_transfer6_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer6_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_INCREMENTED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_DESTINATION,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_FIXED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_DESTINATION,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer6_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer6_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI7_RXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI7_RXI, };
+
 const transfer_cfg_t g_transfer6_cfg =
 {
-    .p_info              = &g_transfer6_info,
-    .p_extend            = &g_transfer6_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer6_info,
+#elif (1 > 1)
+    .p_info              = g_transfer6_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer6_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer6 =
-{
-    .p_ctrl        = &g_transfer6_ctrl,
-    .p_cfg         = &g_transfer6_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer6_ctrl, .p_cfg = &g_transfer6_cfg, .p_api = &g_transfer_on_dtc };
 dtc_instance_ctrl_t g_transfer5_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer5_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_FIXED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_SOURCE,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_INCREMENTED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_SOURCE,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer5_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer5_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI7_TXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI7_TXI, };
+
 const transfer_cfg_t g_transfer5_cfg =
 {
-    .p_info              = &g_transfer5_info,
-    .p_extend            = &g_transfer5_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer5_info,
+#elif (1 > 1)
+    .p_info              = g_transfer5_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer5_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer5 =
-{
-    .p_ctrl        = &g_transfer5_ctrl,
-    .p_cfg         = &g_transfer5_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer5_ctrl, .p_cfg = &g_transfer5_cfg, .p_api = &g_transfer_on_dtc };
 sci_spi_instance_ctrl_t g_sci_spi7_ctrl;
 
 /** SPI extended configuration */
 const sci_spi_extended_cfg_t g_sci_spi7_cfg_extend =
+{ .clk_div =
 {
-    .clk_div = {
-        /* Actual calculated bitrate: 7500000. */ .cks = 0, .brr = 3, .mddr = 0,
-    }
-};
+/* Actual calculated bitrate: 7968750. */.cks = 0,
+  .brr = 2, .mddr = 204, } };
 
 const spi_cfg_t g_sci_spi7_cfg =
-{
-    .channel         = 7,
-    .operating_mode  = SPI_MODE_MASTER,
-    .clk_phase       = SPI_CLK_PHASE_EDGE_ODD,
-    .clk_polarity    = SPI_CLK_POLARITY_LOW,
-    .mode_fault      = SPI_MODE_FAULT_ERROR_DISABLE,
-    .bit_order       = SPI_BIT_ORDER_MSB_FIRST,
+{ .channel = 7, .operating_mode = SPI_MODE_MASTER, .clk_phase = SPI_CLK_PHASE_EDGE_ODD, .clk_polarity =
+          SPI_CLK_POLARITY_LOW,
+  .mode_fault = SPI_MODE_FAULT_ERROR_DISABLE, .bit_order = SPI_BIT_ORDER_MSB_FIRST,
 #define RA_NOT_DEFINED (1)
 #if (RA_NOT_DEFINED == g_transfer5)
     .p_transfer_tx   = NULL,
 #else
-    .p_transfer_tx   = &g_transfer5,
+  .p_transfer_tx = &g_transfer5,
 #endif
 #if (RA_NOT_DEFINED == g_transfer6)
     .p_transfer_rx   = NULL,
 #else
-    .p_transfer_rx   = &g_transfer6,
+  .p_transfer_rx = &g_transfer6,
 #endif
 #undef RA_NOT_DEFINED
-    .p_callback      = sci_spi7_callback,
-    .p_context       = NULL,
-    .rxi_irq         = VECTOR_NUMBER_SCI7_RXI,
-    .txi_irq         = VECTOR_NUMBER_SCI7_TXI,
-    .tei_irq         = VECTOR_NUMBER_SCI7_TEI,
-    .eri_irq         = VECTOR_NUMBER_SCI7_ERI,
-    .rxi_ipl         = (12),
-    .txi_ipl         = (12),
-    .tei_ipl         = (12),
-    .eri_ipl         = (12),
-    .p_extend        = &g_sci_spi7_cfg_extend,
-};
+  .p_callback = sci_spi_callback,
+  .p_context = NULL, .rxi_irq = VECTOR_NUMBER_SCI7_RXI, .txi_irq = VECTOR_NUMBER_SCI7_TXI, .tei_irq =
+          VECTOR_NUMBER_SCI7_TEI,
+  .eri_irq = VECTOR_NUMBER_SCI7_ERI, .rxi_ipl = (12), .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12), .p_extend =
+          &g_sci_spi7_cfg_extend, };
 /* Instance structure to use this module. */
 const spi_instance_t g_sci_spi7 =
-{
-    .p_ctrl          = &g_sci_spi7_ctrl,
-    .p_cfg           = &g_sci_spi7_cfg,
-    .p_api           = &g_spi_on_sci
-};
+{ .p_ctrl = &g_sci_spi7_ctrl, .p_cfg = &g_sci_spi7_cfg, .p_api = &g_spi_on_sci };
 #ifndef CAN0_BAUD_SETTINGS_OVERRIDE
 #define CAN0_BAUD_SETTINGS_OVERRIDE  (0)
 #endif
@@ -750,14 +394,15 @@ can_bit_timing_cfg_t g_can0_bit_timing_cfg =
 };
 #else
 can_bit_timing_cfg_t g_can0_bit_timing_cfg =
-{
-    /* Actual bitrate: 1000000 Hz. Actual Bit Time Ratio: 83 %. */  .baud_rate_prescaler = 1 +1 /* Division value of baud rate prescaler */, .time_segment_1 = 9, .time_segment_2 = 2, .synchronization_jump_width = 2,
-};
+        {
+          /* Actual bitrate: 1000000 Hz. Actual Bit Time Ratio: 83 %. */.baud_rate_prescaler = 1 + 1 /* Division value of baud rate prescaler */,
+          .time_segment_1 = 9,
+          .time_segment_2 = 2,
+          .synchronization_jump_width = 2, };
 #endif
 
-uint32_t g_can0_mailbox_mask[CAN_NO_OF_MAILBOXES_g_can0/4] =
-{
-0,
+uint32_t g_can0_mailbox_mask[CAN_NO_OF_MAILBOXES_g_can0 / 4] =
+{ 0,
 #if CAN_NO_OF_MAILBOXES_g_can0 > 4
 0x1FFFFFFF,
 #endif
@@ -773,34 +418,18 @@ uint32_t g_can0_mailbox_mask[CAN_NO_OF_MAILBOXES_g_can0/4] =
 0x1FFFFFFF,
 0x1FFFFFFF,
 #endif
-};
+        };
 
 can_mailbox_t g_can0_mailbox[CAN_NO_OF_MAILBOXES_g_can0] =
 {
-    {
-        .mailbox_id              =  0x100,
-        .id_mode                 =  CAN_ID_MODE_STANDARD,
-        .mailbox_type            =  CAN_MAILBOX_RECEIVE,
-        .frame_type              =  CAN_FRAME_TYPE_DATA
-},
-    {
-        .mailbox_id              =  1,
-        .id_mode                 =  CAN_ID_MODE_EXTENDED,
-        .mailbox_type            =  CAN_MAILBOX_RECEIVE,
-        .frame_type              =  CAN_FRAME_TYPE_DATA
-    },
-    {
-        .mailbox_id              =  2,
-        .id_mode                 =  CAN_ID_MODE_STANDARD,
-        .mailbox_type            =  CAN_MAILBOX_TRANSMIT,
-        .frame_type              =  CAN_FRAME_TYPE_DATA,
-    },
-    {
-        .mailbox_id              =  3,
-        .id_mode                 =  CAN_ID_MODE_EXTENDED,
-        .mailbox_type            =  CAN_MAILBOX_TRANSMIT,
-        .frame_type              =  CAN_FRAME_TYPE_DATA
-    },
+{ .mailbox_id = 0x100, .id_mode = CAN_ID_MODE_STANDARD, .mailbox_type = CAN_MAILBOX_RECEIVE, .frame_type =
+          CAN_FRAME_TYPE_DATA },
+  { .mailbox_id = 1, .id_mode = CAN_ID_MODE_EXTENDED, .mailbox_type = CAN_MAILBOX_RECEIVE, .frame_type =
+            CAN_FRAME_TYPE_DATA },
+  { .mailbox_id = 2, .id_mode = CAN_ID_MODE_STANDARD, .mailbox_type = CAN_MAILBOX_TRANSMIT, .frame_type =
+            CAN_FRAME_TYPE_DATA, },
+  { .mailbox_id = 3, .id_mode = CAN_ID_MODE_EXTENDED, .mailbox_type = CAN_MAILBOX_TRANSMIT, .frame_type =
+            CAN_FRAME_TYPE_DATA },
 #if CAN_NO_OF_MAILBOXES_g_can0 > 4
     {
         .mailbox_id              =  4,
@@ -978,7 +607,7 @@ can_mailbox_t g_can0_mailbox[CAN_NO_OF_MAILBOXES_g_can0] =
         .frame_type              =  CAN_FRAME_TYPE_DATA
     }
 #endif
-};
+        };
 
 #if CAN_CFG_FIFO_SUPPORT
 const can_fifo_interrupt_cfg_t g_can0_fifo_int_cfg =
@@ -1012,284 +641,274 @@ can_rx_fifo_cfg_t g_can0_rx_fifo_cfg =
 #endif
 
 const can_extended_cfg_t g_can0_extended_cfg =
-{
-    .clock_source           = CAN_CLOCK_SOURCE_CANMCLK,
-    .p_mailbox_mask         = g_can0_mailbox_mask,
-    .p_mailbox              = g_can0_mailbox,
-    .global_id_mode         = CAN_GLOBAL_ID_MODE_STANDARD,
-    .mailbox_count          = CAN_NO_OF_MAILBOXES_g_can0,
-    .message_mode           = CAN_MESSAGE_MODE_OVERWRITE,
+{ .clock_source = CAN_CLOCK_SOURCE_CANMCLK,
+  .p_mailbox_mask = g_can0_mailbox_mask,
+  .p_mailbox = g_can0_mailbox,
+  .global_id_mode = CAN_GLOBAL_ID_MODE_STANDARD,
+  .mailbox_count = CAN_NO_OF_MAILBOXES_g_can0,
+  .message_mode = CAN_MESSAGE_MODE_OVERWRITE,
 #if CAN_CFG_FIFO_SUPPORT
     .p_fifo_int_cfg         = &g_can0_fifo_int_cfg,
     .p_rx_fifo_cfg          = &g_can0_rx_fifo_cfg,
 #else
-    .p_fifo_int_cfg         = NULL,
-    .p_rx_fifo_cfg          = NULL,
+  .p_fifo_int_cfg = NULL,
+  .p_rx_fifo_cfg = NULL,
 #endif
-};
+        };
 
 can_instance_ctrl_t g_can0_ctrl;
 const can_cfg_t g_can0_cfg =
-{
-    .channel            = 0,
-    .p_bit_timing       = &g_can0_bit_timing_cfg,
-    .p_callback         = can0_callback,
-    .p_extend           = &g_can0_extended_cfg,
-    .p_context          = NULL,
-    .ipl                = (12),
+{ .channel = 0,
+  .p_bit_timing = &g_can0_bit_timing_cfg,
+  .p_callback = can0_callback,
+  .p_extend = &g_can0_extended_cfg,
+  .p_context = NULL,
+  .ipl = (12),
 #if defined(VECTOR_NUMBER_CAN0_MAILBOX_TX)
     .tx_irq             = VECTOR_NUMBER_CAN0_MAILBOX_TX,
 #else
-    .tx_irq             = FSP_INVALID_VECTOR,
+  .tx_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_CAN0_MAILBOX_RX)
     .rx_irq             = VECTOR_NUMBER_CAN0_MAILBOX_RX,
 #else
-    .rx_irq             = FSP_INVALID_VECTOR,
+  .rx_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_CAN0_ERROR)
     .error_irq             = VECTOR_NUMBER_CAN0_ERROR,
 #else
-    .error_irq             = FSP_INVALID_VECTOR,
+  .error_irq = FSP_INVALID_VECTOR,
 #endif
-};
+        };
 /* Instance structure to use this module. */
 const can_instance_t g_can0 =
-{
-    .p_ctrl        = &g_can0_ctrl,
-    .p_cfg         = &g_can0_cfg,
-    .p_api         = &g_can_on_can
-};
+{ .p_ctrl = &g_can0_ctrl, .p_cfg = &g_can0_cfg, .p_api = &g_can_on_can };
 dtc_instance_ctrl_t g_transfer4_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer4_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_INCREMENTED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_DESTINATION,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_FIXED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_DESTINATION,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer4_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer4_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI3_RXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI3_RXI, };
+
 const transfer_cfg_t g_transfer4_cfg =
 {
-    .p_info              = &g_transfer4_info,
-    .p_extend            = &g_transfer4_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer4_info,
+#elif (1 > 1)
+    .p_info              = g_transfer4_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer4_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer4 =
-{
-    .p_ctrl        = &g_transfer4_ctrl,
-    .p_cfg         = &g_transfer4_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer4_ctrl, .p_cfg = &g_transfer4_cfg, .p_api = &g_transfer_on_dtc };
 dtc_instance_ctrl_t g_transfer3_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer3_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_FIXED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_SOURCE,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_INCREMENTED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_SOURCE,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer3_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer3_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI3_TXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI3_TXI, };
+
 const transfer_cfg_t g_transfer3_cfg =
 {
-    .p_info              = &g_transfer3_info,
-    .p_extend            = &g_transfer3_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer3_info,
+#elif (1 > 1)
+    .p_info              = g_transfer3_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer3_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer3 =
-{
-    .p_ctrl        = &g_transfer3_ctrl,
-    .p_cfg         = &g_transfer3_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer3_ctrl, .p_cfg = &g_transfer3_cfg, .p_api = &g_transfer_on_dtc };
 sci_spi_instance_ctrl_t g_sci_spi3_ctrl;
 
 /** SPI extended configuration */
 const sci_spi_extended_cfg_t g_sci_spi3_cfg_extend =
+{ .clk_div =
 {
-    .clk_div = {
-        /* Actual calculated bitrate: 7968750. */ .cks = 0, .brr = 2, .mddr = 204,
-    }
-};
+/* Actual calculated bitrate: 7968750. */.cks = 0,
+  .brr = 2, .mddr = 204, } };
 
 const spi_cfg_t g_sci_spi3_cfg =
-{
-    .channel         = 3,
-    .operating_mode  = SPI_MODE_MASTER,
-    .clk_phase       = SPI_CLK_PHASE_EDGE_ODD,
-    .clk_polarity    = SPI_CLK_POLARITY_LOW,
-    .mode_fault      = SPI_MODE_FAULT_ERROR_DISABLE,
-    .bit_order       = SPI_BIT_ORDER_MSB_FIRST,
+{ .channel = 3, .operating_mode = SPI_MODE_MASTER, .clk_phase = SPI_CLK_PHASE_EDGE_ODD, .clk_polarity =
+          SPI_CLK_POLARITY_LOW,
+  .mode_fault = SPI_MODE_FAULT_ERROR_DISABLE, .bit_order = SPI_BIT_ORDER_MSB_FIRST,
 #define RA_NOT_DEFINED (1)
 #if (RA_NOT_DEFINED == g_transfer3)
     .p_transfer_tx   = NULL,
 #else
-    .p_transfer_tx   = &g_transfer3,
+  .p_transfer_tx = &g_transfer3,
 #endif
 #if (RA_NOT_DEFINED == g_transfer4)
     .p_transfer_rx   = NULL,
 #else
-    .p_transfer_rx   = &g_transfer4,
+  .p_transfer_rx = &g_transfer4,
 #endif
 #undef RA_NOT_DEFINED
-    .p_callback      = sci_spi3_callback,
-    .p_context       = NULL,
-    .rxi_irq         = VECTOR_NUMBER_SCI3_RXI,
-    .txi_irq         = VECTOR_NUMBER_SCI3_TXI,
-    .tei_irq         = VECTOR_NUMBER_SCI3_TEI,
-    .eri_irq         = VECTOR_NUMBER_SCI3_ERI,
-    .rxi_ipl         = (12),
-    .txi_ipl         = (12),
-    .tei_ipl         = (12),
-    .eri_ipl         = (12),
-    .p_extend        = &g_sci_spi3_cfg_extend,
-};
+  .p_callback = sci_spi3_callback,
+  .p_context = NULL, .rxi_irq = VECTOR_NUMBER_SCI3_RXI, .txi_irq = VECTOR_NUMBER_SCI3_TXI, .tei_irq =
+          VECTOR_NUMBER_SCI3_TEI,
+  .eri_irq = VECTOR_NUMBER_SCI3_ERI, .rxi_ipl = (12), .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12), .p_extend =
+          &g_sci_spi3_cfg_extend, };
 /* Instance structure to use this module. */
 const spi_instance_t g_sci_spi3 =
-{
-    .p_ctrl          = &g_sci_spi3_ctrl,
-    .p_cfg           = &g_sci_spi3_cfg,
-    .p_api           = &g_spi_on_sci
-};
+{ .p_ctrl = &g_sci_spi3_ctrl, .p_cfg = &g_sci_spi3_cfg, .p_api = &g_spi_on_sci };
 dtc_instance_ctrl_t g_transfer2_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer2_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_INCREMENTED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_DESTINATION,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_FIXED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_DESTINATION,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer2_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer2_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI6_RXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI6_RXI, };
+
 const transfer_cfg_t g_transfer2_cfg =
 {
-    .p_info              = &g_transfer2_info,
-    .p_extend            = &g_transfer2_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer2_info,
+#elif (1 > 1)
+    .p_info              = g_transfer2_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer2_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer2 =
-{
-    .p_ctrl        = &g_transfer2_ctrl,
-    .p_cfg         = &g_transfer2_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer2_ctrl, .p_cfg = &g_transfer2_cfg, .p_api = &g_transfer_on_dtc };
 dtc_instance_ctrl_t g_transfer1_ctrl;
 
+#if (1 == 1)
 transfer_info_t g_transfer1_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_FIXED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_SOURCE,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_INCREMENTED,
-    .size                = TRANSFER_SIZE_1_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 0,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_SOURCE,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer1_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
 const dtc_extended_cfg_t g_transfer1_cfg_extend =
-{
-    .activation_source   = VECTOR_NUMBER_SCI6_TXI,
-};
+{ .activation_source = VECTOR_NUMBER_SCI6_TXI, };
+
 const transfer_cfg_t g_transfer1_cfg =
 {
-    .p_info              = &g_transfer1_info,
-    .p_extend            = &g_transfer1_cfg_extend,
-};
+#if (1 == 1)
+  .p_info = &g_transfer1_info,
+#elif (1 > 1)
+    .p_info              = g_transfer1_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer1_cfg_extend, };
 
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer1 =
-{
-    .p_ctrl        = &g_transfer1_ctrl,
-    .p_cfg         = &g_transfer1_cfg,
-    .p_api         = &g_transfer_on_dtc
-};
+{ .p_ctrl = &g_transfer1_ctrl, .p_cfg = &g_transfer1_cfg, .p_api = &g_transfer_on_dtc };
 sci_spi_instance_ctrl_t g_sci_spi6_ctrl;
 
 /** SPI extended configuration */
 const sci_spi_extended_cfg_t g_sci_spi6_cfg_extend =
+{ .clk_div =
 {
-    .clk_div = {
-        /* Actual calculated bitrate: 7968750. */ .cks = 0, .brr = 2, .mddr = 204,
-    }
-};
+/* Actual calculated bitrate: 7968750. */.cks = 0,
+  .brr = 2, .mddr = 204, } };
 
 const spi_cfg_t g_sci_spi6_cfg =
-{
-    .channel         = 6,
-    .operating_mode  = SPI_MODE_MASTER,
-    .clk_phase       = SPI_CLK_PHASE_EDGE_ODD,
-    .clk_polarity    = SPI_CLK_POLARITY_LOW,
-    .mode_fault      = SPI_MODE_FAULT_ERROR_DISABLE,
-    .bit_order       = SPI_BIT_ORDER_MSB_FIRST,
+{ .channel = 6, .operating_mode = SPI_MODE_MASTER, .clk_phase = SPI_CLK_PHASE_EDGE_ODD, .clk_polarity =
+          SPI_CLK_POLARITY_LOW,
+  .mode_fault = SPI_MODE_FAULT_ERROR_DISABLE, .bit_order = SPI_BIT_ORDER_MSB_FIRST,
 #define RA_NOT_DEFINED (1)
 #if (RA_NOT_DEFINED == g_transfer1)
     .p_transfer_tx   = NULL,
 #else
-    .p_transfer_tx   = &g_transfer1,
+  .p_transfer_tx = &g_transfer1,
 #endif
 #if (RA_NOT_DEFINED == g_transfer2)
     .p_transfer_rx   = NULL,
 #else
-    .p_transfer_rx   = &g_transfer2,
+  .p_transfer_rx = &g_transfer2,
 #endif
 #undef RA_NOT_DEFINED
-    .p_callback      = sci_spi6_callback,
-    .p_context       = NULL,
-    .rxi_irq         = VECTOR_NUMBER_SCI6_RXI,
-    .txi_irq         = VECTOR_NUMBER_SCI6_TXI,
-    .tei_irq         = VECTOR_NUMBER_SCI6_TEI,
-    .eri_irq         = VECTOR_NUMBER_SCI6_ERI,
-    .rxi_ipl         = (12),
-    .txi_ipl         = (12),
-    .tei_ipl         = (12),
-    .eri_ipl         = (12),
-    .p_extend        = &g_sci_spi6_cfg_extend,
-};
+  .p_callback = sci_spi6_callback,
+  .p_context = NULL, .rxi_irq = VECTOR_NUMBER_SCI6_RXI, .txi_irq = VECTOR_NUMBER_SCI6_TXI, .tei_irq =
+          VECTOR_NUMBER_SCI6_TEI,
+  .eri_irq = VECTOR_NUMBER_SCI6_ERI, .rxi_ipl = (12), .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12), .p_extend =
+          &g_sci_spi6_cfg_extend, };
 /* Instance structure to use this module. */
 const spi_instance_t g_sci_spi6 =
-{
-    .p_ctrl          = &g_sci_spi6_ctrl,
-    .p_cfg           = &g_sci_spi6_cfg,
-    .p_api           = &g_spi_on_sci
-};
+{ .p_ctrl = &g_sci_spi6_ctrl, .p_cfg = &g_sci_spi6_cfg, .p_api = &g_spi_on_sci };
 gpt_instance_ctrl_t g_timer2_ctrl;
 #if 0
 const gpt_extended_pwm_cfg_t g_timer2_pwm_extend =
@@ -1301,8 +920,8 @@ const gpt_extended_pwm_cfg_t g_timer2_pwm_extend =
     .trough_irq          = FSP_INVALID_VECTOR,
 #endif
     .poeg_link           = GPT_POEG_LINK_POEG0,
-    .output_disable      =  GPT_OUTPUT_DISABLE_NONE,
-    .adc_trigger         =  GPT_ADC_TRIGGER_NONE,
+    .output_disable      = (gpt_output_disable_t) ( GPT_OUTPUT_DISABLE_NONE),
+    .adc_trigger         = (gpt_adc_trigger_t) ( GPT_ADC_TRIGGER_NONE),
     .dead_time_count_up  = 0,
     .dead_time_count_down = 0,
     .adc_a_compare_match = 0,
@@ -1315,38 +934,32 @@ const gpt_extended_pwm_cfg_t g_timer2_pwm_extend =
 };
 #endif
 const gpt_extended_cfg_t g_timer2_extend =
-{
-    .gtioca = { .output_enabled = false,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .gtiocb = { .output_enabled = false,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .start_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .stop_source         = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .clear_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_up_source     = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_down_source   = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_b_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_ipl       = (BSP_IRQ_DISABLED),
-    .capture_b_ipl       = (BSP_IRQ_DISABLED),
+        { .gtioca =
+        { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+          .gtiocb =
+          { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+          .start_source = (gpt_source_t) (GPT_SOURCE_NONE), .stop_source = (gpt_source_t) (GPT_SOURCE_NONE), .clear_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .count_up_source = (gpt_source_t) (GPT_SOURCE_NONE), .count_down_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .capture_b_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_ipl = (BSP_IRQ_DISABLED), .capture_b_ipl =
+                  (BSP_IRQ_DISABLED),
 #if defined(VECTOR_NUMBER_GPT2_CAPTURE_COMPARE_A)
     .capture_a_irq       = VECTOR_NUMBER_GPT2_CAPTURE_COMPARE_A,
 #else
-    .capture_a_irq       = FSP_INVALID_VECTOR,
+          .capture_a_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_GPT2_CAPTURE_COMPARE_B)
     .capture_b_irq       = VECTOR_NUMBER_GPT2_CAPTURE_COMPARE_B,
 #else
-    .capture_b_irq       = FSP_INVALID_VECTOR,
+          .capture_b_irq = FSP_INVALID_VECTOR,
 #endif
-    .capture_filter_gtioca       = GPT_CAPTURE_FILTER_NONE,
-    .capture_filter_gtiocb       = GPT_CAPTURE_FILTER_NONE,
+          .capture_filter_gtioca = GPT_CAPTURE_FILTER_NONE,
+          .capture_filter_gtiocb = GPT_CAPTURE_FILTER_NONE,
 #if 0
     .p_pwm_cfg                   = &g_timer2_pwm_extend,
 #else
-    .p_pwm_cfg                   = NULL,
+          .p_pwm_cfg = NULL,
 #endif
 #if 0
     .gtior_setting.gtior_b.gtioa  = (0U << 4U) | (0U << 2U) | (0U << 0U),
@@ -1364,36 +977,31 @@ const gpt_extended_cfg_t g_timer2_extend =
     .gtior_setting.gtior_b.nfben  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
     .gtior_setting.gtior_b.nfcsb  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
 #else
-    .gtior_setting.gtior = 0U,
+          .gtior_setting.gtior = 0U,
 #endif
-};
+        };
+
 const timer_cfg_t g_timer2_cfg =
-{
-    .mode                = TIMER_MODE_PERIODIC,
-    /* Actual period: 0.000020833333333333333 seconds. Actual duty: 50%. */ .period_counts = (uint32_t) 0x9c4, .duty_cycle_counts = 0x4e2, .source_div = (timer_source_div_t)0,
-    .channel             = 2,
-    .p_callback          = cb_timer2,
-    /** If NULL then do not add & */
+{ .mode = TIMER_MODE_PERIODIC,
+/* Actual period: 0.000020833333333333333 seconds. Actual duty: 50%. */.period_counts = (uint32_t) 0x9c4,
+  .duty_cycle_counts = 0x4e2, .source_div = (timer_source_div_t) 0, .channel = 2, .p_callback = cb_timer2,
+  /** If NULL then do not add & */
 #if defined(NULL)
     .p_context           = NULL,
 #else
-    .p_context           = &NULL,
+  .p_context = &NULL,
 #endif
-    .p_extend            = &g_timer2_extend,
-    .cycle_end_ipl       = (8),
+  .p_extend = &g_timer2_extend,
+  .cycle_end_ipl = (8),
 #if defined(VECTOR_NUMBER_GPT2_COUNTER_OVERFLOW)
     .cycle_end_irq       = VECTOR_NUMBER_GPT2_COUNTER_OVERFLOW,
 #else
-    .cycle_end_irq       = FSP_INVALID_VECTOR,
+  .cycle_end_irq = FSP_INVALID_VECTOR,
 #endif
-};
+        };
 /* Instance structure to use this module. */
 const timer_instance_t g_timer2 =
-{
-    .p_ctrl        = &g_timer2_ctrl,
-    .p_cfg         = &g_timer2_cfg,
-    .p_api         = &g_timer_on_gpt
-};
+{ .p_ctrl = &g_timer2_ctrl, .p_cfg = &g_timer2_cfg, .p_api = &g_timer_on_gpt };
 gpt_instance_ctrl_t g_timer6_ctrl;
 #if 0
 const gpt_extended_pwm_cfg_t g_timer6_pwm_extend =
@@ -1405,8 +1013,8 @@ const gpt_extended_pwm_cfg_t g_timer6_pwm_extend =
     .trough_irq          = FSP_INVALID_VECTOR,
 #endif
     .poeg_link           = GPT_POEG_LINK_POEG0,
-    .output_disable      =  GPT_OUTPUT_DISABLE_NONE,
-    .adc_trigger         =  GPT_ADC_TRIGGER_NONE,
+    .output_disable      = (gpt_output_disable_t) ( GPT_OUTPUT_DISABLE_NONE),
+    .adc_trigger         = (gpt_adc_trigger_t) ( GPT_ADC_TRIGGER_NONE),
     .dead_time_count_up  = 0,
     .dead_time_count_down = 0,
     .adc_a_compare_match = 0,
@@ -1419,38 +1027,32 @@ const gpt_extended_pwm_cfg_t g_timer6_pwm_extend =
 };
 #endif
 const gpt_extended_cfg_t g_timer6_extend =
-{
-    .gtioca = { .output_enabled = true,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .gtiocb = { .output_enabled = true,
-                .stop_level     = GPT_PIN_LEVEL_LOW
-              },
-    .start_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .stop_source         = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .clear_source        = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_up_source     = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .count_down_source   = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_b_source    = (gpt_source_t) ( GPT_SOURCE_NONE),
-    .capture_a_ipl       = (BSP_IRQ_DISABLED),
-    .capture_b_ipl       = (BSP_IRQ_DISABLED),
+        { .gtioca =
+        { .output_enabled = true, .stop_level = GPT_PIN_LEVEL_LOW },
+          .gtiocb =
+          { .output_enabled = true, .stop_level = GPT_PIN_LEVEL_LOW },
+          .start_source = (gpt_source_t) (GPT_SOURCE_NONE), .stop_source = (gpt_source_t) (GPT_SOURCE_NONE), .clear_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .count_up_source = (gpt_source_t) (GPT_SOURCE_NONE), .count_down_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .capture_b_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_ipl = (BSP_IRQ_DISABLED), .capture_b_ipl =
+                  (BSP_IRQ_DISABLED),
 #if defined(VECTOR_NUMBER_GPT6_CAPTURE_COMPARE_A)
     .capture_a_irq       = VECTOR_NUMBER_GPT6_CAPTURE_COMPARE_A,
 #else
-    .capture_a_irq       = FSP_INVALID_VECTOR,
+          .capture_a_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_GPT6_CAPTURE_COMPARE_B)
     .capture_b_irq       = VECTOR_NUMBER_GPT6_CAPTURE_COMPARE_B,
 #else
-    .capture_b_irq       = FSP_INVALID_VECTOR,
+          .capture_b_irq = FSP_INVALID_VECTOR,
 #endif
-    .capture_filter_gtioca       = GPT_CAPTURE_FILTER_NONE,
-    .capture_filter_gtiocb       = GPT_CAPTURE_FILTER_NONE,
+          .capture_filter_gtioca = GPT_CAPTURE_FILTER_NONE,
+          .capture_filter_gtiocb = GPT_CAPTURE_FILTER_NONE,
 #if 0
     .p_pwm_cfg                   = &g_timer6_pwm_extend,
 #else
-    .p_pwm_cfg                   = NULL,
+          .p_pwm_cfg = NULL,
 #endif
 #if 0
     .gtior_setting.gtior_b.gtioa  = (0U << 4U) | (0U << 2U) | (0U << 0U),
@@ -1468,36 +1070,310 @@ const gpt_extended_cfg_t g_timer6_extend =
     .gtior_setting.gtior_b.nfben  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
     .gtior_setting.gtior_b.nfcsb  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
 #else
-    .gtior_setting.gtior = 0U,
+          .gtior_setting.gtior = 0U,
 #endif
-};
+        };
+
 const timer_cfg_t g_timer6_cfg =
-{
-    .mode                = TIMER_MODE_PERIODIC,
-    /* Actual period: 0.000012816666666666667 seconds. Actual duty: 50%. */ .period_counts = (uint32_t) 0x602, .duty_cycle_counts = 0x301, .source_div = (timer_source_div_t)0,
-    .channel             = 6,
-    .p_callback          = NULL,
-    /** If NULL then do not add & */
+{ .mode = TIMER_MODE_PERIODIC,
+/* Actual period: 0.000012816666666666667 seconds. Actual duty: 50%. */.period_counts = (uint32_t) 0x602,
+  .duty_cycle_counts = 0x301, .source_div = (timer_source_div_t) 0, .channel = 6, .p_callback = NULL,
+  /** If NULL then do not add & */
 #if defined(NULL)
     .p_context           = NULL,
 #else
-    .p_context           = &NULL,
+  .p_context = &NULL,
 #endif
-    .p_extend            = &g_timer6_extend,
-    .cycle_end_ipl       = (BSP_IRQ_DISABLED),
+  .p_extend = &g_timer6_extend,
+  .cycle_end_ipl = (BSP_IRQ_DISABLED),
 #if defined(VECTOR_NUMBER_GPT6_COUNTER_OVERFLOW)
     .cycle_end_irq       = VECTOR_NUMBER_GPT6_COUNTER_OVERFLOW,
 #else
-    .cycle_end_irq       = FSP_INVALID_VECTOR,
+  .cycle_end_irq = FSP_INVALID_VECTOR,
 #endif
-};
+        };
 /* Instance structure to use this module. */
 const timer_instance_t g_timer6 =
+{ .p_ctrl = &g_timer6_ctrl, .p_cfg = &g_timer6_cfg, .p_api = &g_timer_on_gpt };
+gpt_instance_ctrl_t g_timer5_ctrl;
+#if 0
+const gpt_extended_pwm_cfg_t g_timer5_pwm_extend =
 {
-    .p_ctrl        = &g_timer6_ctrl,
-    .p_cfg         = &g_timer6_cfg,
-    .p_api         = &g_timer_on_gpt
+    .trough_ipl          = (BSP_IRQ_DISABLED),
+#if defined(VECTOR_NUMBER_GPT5_COUNTER_UNDERFLOW)
+    .trough_irq          = VECTOR_NUMBER_GPT5_COUNTER_UNDERFLOW,
+#else
+    .trough_irq          = FSP_INVALID_VECTOR,
+#endif
+    .poeg_link           = GPT_POEG_LINK_POEG0,
+    .output_disable      = (gpt_output_disable_t) ( GPT_OUTPUT_DISABLE_NONE),
+    .adc_trigger         = (gpt_adc_trigger_t) ( GPT_ADC_TRIGGER_NONE),
+    .dead_time_count_up  = 0,
+    .dead_time_count_down = 0,
+    .adc_a_compare_match = 0,
+    .adc_b_compare_match = 0,
+    .interrupt_skip_source = GPT_INTERRUPT_SKIP_SOURCE_NONE,
+    .interrupt_skip_count  = GPT_INTERRUPT_SKIP_COUNT_0,
+    .interrupt_skip_adc    = GPT_INTERRUPT_SKIP_ADC_NONE,
+    .gtioca_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
+    .gtiocb_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
 };
+#endif
+const gpt_extended_cfg_t g_timer5_extend =
+        { .gtioca =
+        { .output_enabled = true, .stop_level = GPT_PIN_LEVEL_LOW },
+          .gtiocb =
+          { .output_enabled = true, .stop_level = GPT_PIN_LEVEL_LOW },
+          .start_source = (gpt_source_t) (GPT_SOURCE_NONE), .stop_source = (gpt_source_t) (GPT_SOURCE_NONE), .clear_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .count_up_source = (gpt_source_t) (GPT_SOURCE_NONE), .count_down_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .capture_b_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_ipl = (BSP_IRQ_DISABLED), .capture_b_ipl =
+                  (BSP_IRQ_DISABLED),
+#if defined(VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_A)
+    .capture_a_irq       = VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_A,
+#else
+          .capture_a_irq = FSP_INVALID_VECTOR,
+#endif
+#if defined(VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_B)
+    .capture_b_irq       = VECTOR_NUMBER_GPT5_CAPTURE_COMPARE_B,
+#else
+          .capture_b_irq = FSP_INVALID_VECTOR,
+#endif
+          .capture_filter_gtioca = GPT_CAPTURE_FILTER_NONE,
+          .capture_filter_gtiocb = GPT_CAPTURE_FILTER_NONE,
+#if 0
+    .p_pwm_cfg                   = &g_timer5_pwm_extend,
+#else
+          .p_pwm_cfg = NULL,
+#endif
+#if 0
+    .gtior_setting.gtior_b.gtioa  = (0U << 4U) | (0U << 2U) | (0U << 0U),
+    .gtior_setting.gtior_b.oadflt = (uint32_t) GPT_PIN_LEVEL_LOW,
+    .gtior_setting.gtior_b.oahld  = 0U,
+    .gtior_setting.gtior_b.oae    = (uint32_t) true,
+    .gtior_setting.gtior_b.oadf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
+    .gtior_setting.gtior_b.nfaen  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
+    .gtior_setting.gtior_b.nfcsa  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
+    .gtior_setting.gtior_b.gtiob  = (0U << 4U) | (0U << 2U) | (0U << 0U),
+    .gtior_setting.gtior_b.obdflt = (uint32_t) GPT_PIN_LEVEL_LOW,
+    .gtior_setting.gtior_b.obhld  = 0U,
+    .gtior_setting.gtior_b.obe    = (uint32_t) true,
+    .gtior_setting.gtior_b.obdf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
+    .gtior_setting.gtior_b.nfben  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
+    .gtior_setting.gtior_b.nfcsb  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
+#else
+          .gtior_setting.gtior = 0U,
+#endif
+        };
+
+const timer_cfg_t g_timer5_cfg =
+{ .mode = TIMER_MODE_PWM,
+/* Actual period: 0.00008333333333333333 seconds. Actual duty: 50%. */.period_counts = (uint32_t) 0x2710,
+  .duty_cycle_counts = 0x1388, .source_div = (timer_source_div_t) 0, .channel = 5, .p_callback = NULL,
+  /** If NULL then do not add & */
+#if defined(NULL)
+    .p_context           = NULL,
+#else
+  .p_context = &NULL,
+#endif
+  .p_extend = &g_timer5_extend,
+  .cycle_end_ipl = (BSP_IRQ_DISABLED),
+#if defined(VECTOR_NUMBER_GPT5_COUNTER_OVERFLOW)
+    .cycle_end_irq       = VECTOR_NUMBER_GPT5_COUNTER_OVERFLOW,
+#else
+  .cycle_end_irq = FSP_INVALID_VECTOR,
+#endif
+        };
+/* Instance structure to use this module. */
+const timer_instance_t g_timer5 =
+{ .p_ctrl = &g_timer5_ctrl, .p_cfg = &g_timer5_cfg, .p_api = &g_timer_on_gpt };
+gpt_instance_ctrl_t g_timer_ctrl;
+#if 0
+const gpt_extended_pwm_cfg_t g_timer_pwm_extend =
+{
+    .trough_ipl          = (BSP_IRQ_DISABLED),
+#if defined(VECTOR_NUMBER_GPT1_COUNTER_UNDERFLOW)
+    .trough_irq          = VECTOR_NUMBER_GPT1_COUNTER_UNDERFLOW,
+#else
+    .trough_irq          = FSP_INVALID_VECTOR,
+#endif
+    .poeg_link           = GPT_POEG_LINK_POEG0,
+    .output_disable      = (gpt_output_disable_t) ( GPT_OUTPUT_DISABLE_NONE),
+    .adc_trigger         = (gpt_adc_trigger_t) ( GPT_ADC_TRIGGER_NONE),
+    .dead_time_count_up  = 0,
+    .dead_time_count_down = 0,
+    .adc_a_compare_match = 0,
+    .adc_b_compare_match = 0,
+    .interrupt_skip_source = GPT_INTERRUPT_SKIP_SOURCE_NONE,
+    .interrupt_skip_count  = GPT_INTERRUPT_SKIP_COUNT_0,
+    .interrupt_skip_adc    = GPT_INTERRUPT_SKIP_ADC_NONE,
+    .gtioca_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
+    .gtiocb_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
+};
+#endif
+const gpt_extended_cfg_t g_timer_extend =
+        { .gtioca =
+        { .output_enabled = true, .stop_level = GPT_PIN_LEVEL_LOW },
+          .gtiocb =
+          { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
+          .start_source = (gpt_source_t) (GPT_SOURCE_NONE), .stop_source = (gpt_source_t) (GPT_SOURCE_NONE), .clear_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .count_up_source = (gpt_source_t) (GPT_SOURCE_NONE), .count_down_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_source =
+                  (gpt_source_t) (GPT_SOURCE_NONE),
+          .capture_b_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_ipl = (BSP_IRQ_DISABLED), .capture_b_ipl =
+                  (BSP_IRQ_DISABLED),
+#if defined(VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_A)
+    .capture_a_irq       = VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_A,
+#else
+          .capture_a_irq = FSP_INVALID_VECTOR,
+#endif
+#if defined(VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_B)
+    .capture_b_irq       = VECTOR_NUMBER_GPT1_CAPTURE_COMPARE_B,
+#else
+          .capture_b_irq = FSP_INVALID_VECTOR,
+#endif
+          .capture_filter_gtioca = GPT_CAPTURE_FILTER_NONE,
+          .capture_filter_gtiocb = GPT_CAPTURE_FILTER_NONE,
+#if 0
+    .p_pwm_cfg                   = &g_timer_pwm_extend,
+#else
+          .p_pwm_cfg = NULL,
+#endif
+#if 0
+    .gtior_setting.gtior_b.gtioa  = (0U << 4U) | (0U << 2U) | (0U << 0U),
+    .gtior_setting.gtior_b.oadflt = (uint32_t) GPT_PIN_LEVEL_LOW,
+    .gtior_setting.gtior_b.oahld  = 0U,
+    .gtior_setting.gtior_b.oae    = (uint32_t) true,
+    .gtior_setting.gtior_b.oadf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
+    .gtior_setting.gtior_b.nfaen  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
+    .gtior_setting.gtior_b.nfcsa  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
+    .gtior_setting.gtior_b.gtiob  = (0U << 4U) | (0U << 2U) | (0U << 0U),
+    .gtior_setting.gtior_b.obdflt = (uint32_t) GPT_PIN_LEVEL_LOW,
+    .gtior_setting.gtior_b.obhld  = 0U,
+    .gtior_setting.gtior_b.obe    = (uint32_t) false,
+    .gtior_setting.gtior_b.obdf   = (uint32_t) GPT_GTIOC_DISABLE_PROHIBITED,
+    .gtior_setting.gtior_b.nfben  = ((uint32_t) GPT_CAPTURE_FILTER_NONE & 1U),
+    .gtior_setting.gtior_b.nfcsb  = ((uint32_t) GPT_CAPTURE_FILTER_NONE >> 1U),
+#else
+          .gtior_setting.gtior = 0U,
+#endif
+        };
+
+const timer_cfg_t g_timer_cfg =
+{ .mode = TIMER_MODE_PERIODIC,
+/* Actual period: 3.25e-7 seconds. Actual duty: 48.717948717948715%. */.period_counts = (uint32_t) 0x27,
+  .duty_cycle_counts = 0x13, .source_div = (timer_source_div_t) 0, .channel = 1, .p_callback = NULL,
+  /** If NULL then do not add & */
+#if defined(NULL)
+    .p_context           = NULL,
+#else
+  .p_context = &NULL,
+#endif
+  .p_extend = &g_timer_extend,
+  .cycle_end_ipl = (BSP_IRQ_DISABLED),
+#if defined(VECTOR_NUMBER_GPT1_COUNTER_OVERFLOW)
+    .cycle_end_irq       = VECTOR_NUMBER_GPT1_COUNTER_OVERFLOW,
+#else
+  .cycle_end_irq = FSP_INVALID_VECTOR,
+#endif
+        };
+/* Instance structure to use this module. */
+const timer_instance_t g_timer =
+{ .p_ctrl = &g_timer_ctrl, .p_cfg = &g_timer_cfg, .p_api = &g_timer_on_gpt };
+dtc_instance_ctrl_t g_transfer10_ctrl;
+
+#if (1 == 1)
+transfer_info_t g_transfer10_info =
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_DESTINATION,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_4_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_BLOCK,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 0, };
+
+#elif (1 > 1)
+/* User is responsible to initialize the array. */
+transfer_info_t g_transfer10_info[1];
+#else
+/* User must call api::reconfigure before enable DTC transfer. */
+#endif
+
+const dtc_extended_cfg_t g_transfer10_cfg_extend =
+{ .activation_source = VECTOR_NUMBER_SSI0_RXI, };
+
+const transfer_cfg_t g_transfer10_cfg =
+{
+#if (1 == 1)
+  .p_info = &g_transfer10_info,
+#elif (1 > 1)
+    .p_info              = g_transfer10_info,
+#else
+    .p_info = NULL,
+#endif
+  .p_extend = &g_transfer10_cfg_extend, };
+
+/* Instance structure to use this module. */
+const transfer_instance_t g_transfer10 =
+{ .p_ctrl = &g_transfer10_ctrl, .p_cfg = &g_transfer10_cfg, .p_api = &g_transfer_on_dtc };
+ssi_instance_ctrl_t g_i2s0_ctrl;
+
+/** SSI instance configuration */
+const ssi_extended_cfg_t g_i2s0_cfg_extend =
+{ .audio_clock = SSI_AUDIO_CLOCK_INTERNAL, .bit_clock_div = SSI_CLOCK_DIV_1, };
+
+/** I2S interface configuration */
+const i2s_cfg_t g_i2s0_cfg =
+{ .channel = 0, .pcm_width = I2S_PCM_WIDTH_24_BITS, .operating_mode = I2S_MODE_SLAVE, .word_length =
+          I2S_WORD_LENGTH_32_BITS,
+  .ws_continue = I2S_WS_CONTINUE_OFF, .p_callback = i2s_callback, .p_context = NULL, .p_extend = &g_i2s0_cfg_extend,
+#if (BSP_IRQ_DISABLED) != BSP_IRQ_DISABLED
+  #if 0 == 0
+                .txi_irq                 = VECTOR_NUMBER_SSI0_TXI,
+  #else
+                .txi_irq                 = VECTOR_NUMBER_SSI0_TXI_RXI,
+  #endif
+#else
+  .txi_irq = FSP_INVALID_VECTOR,
+#endif
+#if (2) != BSP_IRQ_DISABLED
+#if 0 == 0
+  .rxi_irq = VECTOR_NUMBER_SSI0_RXI,
+#else
+                .rxi_irq                 = VECTOR_NUMBER_SSI0_TXI_RXI,
+  #endif
+#else
+                .rxi_irq                 = FSP_INVALID_VECTOR,
+#endif
+#if defined(VECTOR_NUMBER_SSI0_INT)
+                .int_irq                 = VECTOR_NUMBER_SSI0_INT,
+#else
+  .int_irq = FSP_INVALID_VECTOR,
+#endif
+  .txi_ipl = (BSP_IRQ_DISABLED),
+  .rxi_ipl = (2), .idle_err_ipl = (2),
+#define RA_NOT_DEFINED (1)
+#if (RA_NOT_DEFINED == RA_NOT_DEFINED)
+  .p_transfer_tx = NULL,
+#else
+                .p_transfer_tx       = &RA_NOT_DEFINED,
+#endif
+#if (RA_NOT_DEFINED == g_transfer10)
+                .p_transfer_rx       = NULL,
+#else
+  .p_transfer_rx = &g_transfer10,
+#endif
+#undef RA_NOT_DEFINED
+        };
+
+/* Instance structure to use this module. */
+const i2s_instance_t g_i2s0 =
+{ .p_ctrl = &g_i2s0_ctrl, .p_cfg = &g_i2s0_cfg, .p_api = &g_i2s_on_ssi };
 #if JPEG_CFG_ENCODE_ENABLE
 
             /* Luminance quantization table */static const uint8_t quant_table_0[] ={16, 11, 10, 16, 24, 40, 51, 61, 12, 12, 14, 19, 26, 58, 60, 55, 14, 13, 16, 24, 40, 57, 69, 56, 14, 17, 22, 29, 51, 87, 80, 62, 18, 22, 37, 56, 68, 109, 103, 77, 24, 35, 55, 64, 81, 104, 113, 92, 49, 64, 78, 87, 103, 121, 120, 101, 72, 92, 95, 98, 112, 100, 103, 99, };/* Chrominance quantization table */static const uint8_t quant_table_1[] ={17, 18, 24, 47, 99, 99, 99, 99, 18, 21, 26, 66, 99, 99, 99, 99, 24, 26, 56, 99, 99, 99, 99, 99, 47, 66, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, };
@@ -1631,23 +1507,21 @@ const timer_instance_t g_timer6 =
             };
             #endif
 
-            jpeg_instance_ctrl_t g_jpeg0_ctrl;
-            const jpeg_cfg_t  g_jpeg0_cfg =
-            {
-                .jedi_ipl           = (8),
-                .jdti_ipl           = (8),
-            #if defined(VECTOR_NUMBER_JPEG_JEDI)
+jpeg_instance_ctrl_t g_jpeg0_ctrl;
+const jpeg_cfg_t g_jpeg0_cfg =
+{ .jedi_ipl = (8), .jdti_ipl = (8),
+#if defined(VECTOR_NUMBER_JPEG_JEDI)
                 .jedi_irq           = VECTOR_NUMBER_JPEG_JEDI,
             #else
-                .jedi_irq           = FSP_INVALID_VECTOR,
-            #endif
-                .jdti_irq           = VECTOR_NUMBER_JPEG_JDTI,
+  .jedi_irq = FSP_INVALID_VECTOR,
+#endif
+  .jdti_irq = VECTOR_NUMBER_JPEG_JDTI,
 
-            #if JPEG_CFG_DECODE_ENABLE && JPEG_CFG_ENCODE_ENABLE
+#if JPEG_CFG_DECODE_ENABLE && JPEG_CFG_ENCODE_ENABLE
                 .default_mode              = (JPEG_MODE_DECODE),
             #endif
 
-            #if JPEG_CFG_DECODE_ENABLE
+#if JPEG_CFG_DECODE_ENABLE
                 .decode_input_data_order   = JPEG_DATA_ORDER_NORMAL,
                 .decode_output_data_order  = JPEG_DATA_ORDER_NORMAL,
                 .pixel_format              = JPEG_DECODE_PIXEL_FORMAT_RGB565,
@@ -1656,7 +1530,7 @@ const timer_instance_t g_timer6 =
                 .p_decode_context          = NULL,
             #endif
 
-            #if JPEG_CFG_ENCODE_ENABLE
+#if JPEG_CFG_ENCODE_ENABLE
                 .encode_input_data_order   = JPEG_DATA_ORDER_NORMAL,
                 .encode_output_data_order  = JPEG_DATA_ORDER_NORMAL,
                 .dri_marker                = 512,
@@ -1672,552 +1546,162 @@ const timer_instance_t g_timer6 =
                 .p_encode_callback         = NULL,
                 .p_encode_context          = NULL,
             #endif
-            };
-
-            const jpeg_instance_t g_jpeg0 =
-            {
-                .p_api  = (jpeg_api_t const *)&g_jpeg_on_jpeg,
-                .p_ctrl = &g_jpeg0_ctrl,
-                .p_cfg  = &g_jpeg0_cfg
-            };
-/** Display framebuffer */
-        #if GLCDC_CFG_LAYER_1_ENABLE
-        uint8_t fb_background[1][DISPLAY_BUFFER_STRIDE_BYTES_INPUT0 * DISPLAY_VSIZE_INPUT0] BSP_ALIGN_VARIABLE(64) BSP_PLACE_IN_SECTION(".bss");
-        #else
-        /** Graphics Layer 1 is specified not to be used when starting */
-        #endif
-        #if GLCDC_CFG_LAYER_2_ENABLE
-        uint8_t fb_foreground[2][DISPLAY_BUFFER_STRIDE_BYTES_INPUT1 * DISPLAY_VSIZE_INPUT1] BSP_ALIGN_VARIABLE(64) BSP_PLACE_IN_SECTION(".bss");
-        #else
-        /** Graphics Layer 2 is specified not to be used when starting */
-        #endif
-
-        #if GLCDC_CFG_CLUT_ENABLE
-        /** Display CLUT buffer to be used for updating CLUT */
-        static uint32_t CLUT_buffer[256];
-
-        /** Display CLUT configuration(only used if using CLUT format) */
-        display_clut_cfg_t g_display0_clut_cfg_glcdc =
-        {
-            .p_base              = (uint32_t *)CLUT_buffer,
-            .start               = 0,   /* User have to update this setting when using */
-            .size                = 256  /* User have to update this setting when using */
-        };
-        #else
-        /** CLUT is specified not to be used */
-        #endif
-
-        #if (false)
-         #define GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST   const
-         #define GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST    (uint16_t *)
-         #define GLCDC_CFG_CORRECTION_GAMMA_CFG_CAST      (display_gamma_correction_t *)
-        #else
-         #define GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST
-         #define GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST
-         #define GLCDC_CFG_CORRECTION_GAMMA_CFG_CAST
-        #endif
-
-        #if ((GLCDC_CFG_CORRECTION_GAMMA_ENABLE_R | GLCDC_CFG_CORRECTION_GAMMA_ENABLE_G | GLCDC_CFG_CORRECTION_GAMMA_ENABLE_B) && GLCDC_CFG_COLOR_CORRECTION_ENABLE)
-        /** Gamma correction tables */
-        #if GLCDC_CFG_CORRECTION_GAMMA_ENABLE_R
-        static GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST uint16_t glcdc_gamma_r_gain[DISPLAY_GAMMA_CURVE_ELEMENT_NUM] = {1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024};
-        static GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST uint16_t glcdc_gamma_r_threshold[DISPLAY_GAMMA_CURVE_ELEMENT_NUM] = {0, 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960};
-        #endif
-        #if GLCDC_CFG_CORRECTION_GAMMA_ENABLE_G
-        static GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST uint16_t glcdc_gamma_g_gain[DISPLAY_GAMMA_CURVE_ELEMENT_NUM] = {1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024};
-        static GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST uint16_t glcdc_gamma_g_threshold[DISPLAY_GAMMA_CURVE_ELEMENT_NUM] = {0, 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960};
-        #endif
-        #if GLCDC_CFG_CORRECTION_GAMMA_ENABLE_B
-        static GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST uint16_t glcdc_gamma_b_gain[DISPLAY_GAMMA_CURVE_ELEMENT_NUM] = {1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024};
-        static GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST uint16_t glcdc_gamma_b_threshold[DISPLAY_GAMMA_CURVE_ELEMENT_NUM] = {0, 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960};
-        #endif
-        GLCDC_CFG_CORRECTION_GAMMA_TABLE_CONST display_gamma_correction_t g_display0_gamma_cfg =
-        {
-            .r =
-            {
-                .enable      = GLCDC_CFG_CORRECTION_GAMMA_ENABLE_R,
-        #if GLCDC_CFG_CORRECTION_GAMMA_ENABLE_R
-                .gain        = GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST glcdc_gamma_r_gain,
-                .threshold   = GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST glcdc_gamma_r_threshold
-        #else
-                .gain        = NULL,
-                .threshold   = NULL
-        #endif
-            },
-            .g =
-            {
-                .enable      = GLCDC_CFG_CORRECTION_GAMMA_ENABLE_G,
-        #if GLCDC_CFG_CORRECTION_GAMMA_ENABLE_G
-                .gain        = GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST glcdc_gamma_g_gain,
-                .threshold   = GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST glcdc_gamma_g_threshold
-        #else
-                .gain        = NULL,
-                .threshold   = NULL
-        #endif
-            },
-            .b =
-            {
-                .enable      = GLCDC_CFG_CORRECTION_GAMMA_ENABLE_B,
-        #if GLCDC_CFG_CORRECTION_GAMMA_ENABLE_B
-                .gain        = GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST glcdc_gamma_b_gain,
-                .threshold   = GLCDC_CFG_CORRECTION_GAMMA_TABLE_CAST glcdc_gamma_b_threshold
-        #else
-                .gain        = NULL,
-                .threshold   = NULL
-        #endif
-            }
-        };
-        #endif
-
-        /** Display device extended configuration */
-        const glcdc_extended_cfg_t g_display0_extend_cfg =
-        {
-            .tcon_hsync          = GLCDC_TCON_PIN_0,
-            .tcon_vsync          = GLCDC_TCON_PIN_1,
-            .tcon_de             = GLCDC_TCON_PIN_2,
-            .correction_proc_order = GLCDC_CORRECTION_PROC_ORDER_BRIGHTNESS_CONTRAST2GAMMA,
-            .clksrc              = GLCDC_CLK_SRC_INTERNAL,
-            .clock_div_ratio     = GLCDC_PANEL_CLK_DIVISOR_24,
-            .dithering_mode      = GLCDC_DITHERING_MODE_TRUNCATE,
-            .dithering_pattern_A = GLCDC_DITHERING_PATTERN_11,
-            .dithering_pattern_B = GLCDC_DITHERING_PATTERN_11,
-            .dithering_pattern_C = GLCDC_DITHERING_PATTERN_11,
-            .dithering_pattern_D = GLCDC_DITHERING_PATTERN_11
         };
 
-        /** Display control block instance */
-        glcdc_instance_ctrl_t g_display0_ctrl;
-
-        /** Display interface configuration */
-        const display_cfg_t g_display0_cfg =
-        {
-            /** Input1(Graphics1 layer) configuration */
-            .input[0] =
-            {
-                #if GLCDC_CFG_LAYER_1_ENABLE
-                .p_base              = (uint32_t *)&fb_background[0],
-                #else
-                .p_base              = NULL,
-                #endif
-                .hsize               = DISPLAY_HSIZE_INPUT0,
-                .vsize               = DISPLAY_VSIZE_INPUT0,
-                .hstride             = DISPLAY_BUFFER_STRIDE_PIXELS_INPUT0,
-                .format              = DISPLAY_IN_FORMAT_16BITS_RGB565,
-                .line_descending_enable = false,
-                .lines_repeat_enable = false,
-                .lines_repeat_times  = 0
-            },
-
-            /** Input2(Graphics2 layer) configuration */
-            .input[1] =
-            {
-                #if GLCDC_CFG_LAYER_2_ENABLE
-                .p_base              = (uint32_t *)&fb_foreground[0],
-                #else
-                .p_base              = NULL,
-                #endif
-                .hsize               = DISPLAY_HSIZE_INPUT1,
-                .vsize               = DISPLAY_VSIZE_INPUT1,
-                .hstride             = DISPLAY_BUFFER_STRIDE_PIXELS_INPUT1,
-                .format              = DISPLAY_IN_FORMAT_16BITS_RGB565,
-                .line_descending_enable = false,
-                .lines_repeat_enable = false,
-                .lines_repeat_times  = 0
-             },
-
-            /** Input1(Graphics1 layer) layer configuration */
-            .layer[0] =
-            {
-                .coordinate = {
-                        .x           = 0,
-                        .y           = 0
-                },
-                .bg_color =
-                {
-                    .byte = {
-                        .a           = 255,
-                        .r           = 255,
-                        .g           = 255,
-                        .b           = 255
-                    }
-                },
-                .fade_control        = DISPLAY_FADE_CONTROL_NONE,
-                .fade_speed          = 0
-            },
-
-            /** Input2(Graphics2 layer) layer configuration */
-            .layer[1] =
-            {
-                .coordinate = {
-                        .x           = 0,
-                        .y           = 0
-                },
-                .bg_color =
-                {
-                    .byte = {
-                        .a           = 255,
-                        .r           = 255,
-                        .g           = 255,
-                        .b           = 255
-                    }
-                },
-                .fade_control        = DISPLAY_FADE_CONTROL_NONE,
-                .fade_speed          = 0
-            },
-
-            /** Output configuration */
-            .output =
-            {
-                .htiming =
-                {
-                    .total_cyc       = 525,
-                    .display_cyc     = 480,
-                    .back_porch      = 40,
-                    .sync_width       = 1,
-                    .sync_polarity   = DISPLAY_SIGNAL_POLARITY_LOACTIVE
-                },
-                .vtiming =
-                {
-                    .total_cyc       = 316,
-                    .display_cyc     = 272,
-                    .back_porch      = 8,
-                    .sync_width       = 1,
-                    .sync_polarity   = DISPLAY_SIGNAL_POLARITY_LOACTIVE
-                },
-                .format              = DISPLAY_OUT_FORMAT_16BITS_RGB565,
-                .endian              = DISPLAY_ENDIAN_LITTLE,
-                .color_order         = DISPLAY_COLOR_ORDER_BGR,
-                .data_enable_polarity = DISPLAY_SIGNAL_POLARITY_HIACTIVE,
-                .sync_edge           = DISPLAY_SIGNAL_SYNC_EDGE_RISING,
-                .bg_color =
-                {
-                    .byte = {
-                        .a           = 255,
-                        .r           = 0,
-                        .g           = 0,
-                        .b           = 0
-                    }
-                },
-#if (GLCDC_CFG_COLOR_CORRECTION_ENABLE)
-                .brightness =
-                {
-                    .enable          = false,
-                    .r               = 512,
-                    .g               = 512,
-                    .b               = 512
-                },
-                .contrast =
-                {
-                    .enable          = false,
-                    .r               = 128,
-                    .g               = 128,
-                    .b               = 128
-                },
-#if (GLCDC_CFG_CORRECTION_GAMMA_ENABLE_R | GLCDC_CFG_CORRECTION_GAMMA_ENABLE_G | GLCDC_CFG_CORRECTION_GAMMA_ENABLE_B)
- #if false
-                .p_gamma_correction  = GLCDC_CFG_CORRECTION_GAMMA_CFG_CAST (&g_display0_gamma_cfg),
- #else
-                .p_gamma_correction  = &g_display0_gamma_cfg,
- #endif
-#else
-                .p_gamma_correction  = NULL,
-#endif
-#endif
-                .dithering_on        = false
-            },
-
-            /** Display device callback function pointer */
-            .p_callback              = _ra_port_display_callback,
-            .p_context               = NULL,
-
-            /** Display device extended configuration */
-            .p_extend                = (void *)(&g_display0_extend_cfg),
-
-            .line_detect_ipl        = (12),
-            .underflow_1_ipl        = (BSP_IRQ_DISABLED),
-            .underflow_2_ipl        = (BSP_IRQ_DISABLED),
-
-#if defined(VECTOR_NUMBER_GLCDC_LINE_DETECT)
-            .line_detect_irq        = VECTOR_NUMBER_GLCDC_LINE_DETECT,
-#else
-            .line_detect_irq        = FSP_INVALID_VECTOR,
-#endif
-#if defined(VECTOR_NUMBER_GLCDC_UNDERFLOW_1)
-            .underflow_1_irq        = VECTOR_NUMBER_GLCDC_UNDERFLOW_1,
-#else
-            .underflow_1_irq        = FSP_INVALID_VECTOR,
-#endif
-#if defined(VECTOR_NUMBER_GLCDC_UNDERFLOW_2)
-            .underflow_2_irq        = VECTOR_NUMBER_GLCDC_UNDERFLOW_2,
-#else
-            .underflow_2_irq        = FSP_INVALID_VECTOR,
-#endif
-        };
-
-#if GLCDC_CFG_LAYER_1_ENABLE
-        /** Display on GLCDC run-time configuration(for the graphics1 layer) */
-        display_runtime_cfg_t g_display0_runtime_cfg_bg =
-        {
-            .input =
-            {
-                #if (true)
-                .p_base              = (uint32_t *)&fb_background[0],
-                #else
-                .p_base              = NULL,
-                #endif
-                .hsize               = DISPLAY_HSIZE_INPUT0,
-                .vsize               = DISPLAY_VSIZE_INPUT0,
-                .hstride             = DISPLAY_BUFFER_STRIDE_PIXELS_INPUT0,
-                .format              = DISPLAY_IN_FORMAT_16BITS_RGB565,
-                .line_descending_enable = false,
-                .lines_repeat_enable = false,
-                .lines_repeat_times  = 0
-            },
-            .layer =
-            {
-                .coordinate = {
-                        .x           = 0,
-                        .y           = 0
-                },
-                .bg_color            =
-                {
-                    .byte            =
-                    {
-                        .a           = 255,
-                        .r           = 255,
-                        .g           = 255,
-                        .b           = 255
-                    }
-                },
-                .fade_control        = DISPLAY_FADE_CONTROL_NONE,
-                .fade_speed          = 0
-            }
-        };
-#endif
-#if GLCDC_CFG_LAYER_2_ENABLE
-        /** Display on GLCDC run-time configuration(for the graphics2 layer) */
-        display_runtime_cfg_t g_display0_runtime_cfg_fg =
-        {
-            .input =
-            {
-                #if (false)
-                .p_base              = (uint32_t *)&fb_foreground[0],
-                #else
-                .p_base              = NULL,
-                #endif
-                .hsize               = DISPLAY_HSIZE_INPUT1,
-                .vsize               = DISPLAY_VSIZE_INPUT1,
-                .hstride             = DISPLAY_BUFFER_STRIDE_PIXELS_INPUT1,
-                .format              = DISPLAY_IN_FORMAT_16BITS_RGB565,
-                .line_descending_enable = false,
-                .lines_repeat_enable = false,
-                .lines_repeat_times  = 0
-             },
-            .layer =
-            {
-                .coordinate = {
-                        .x           = 0,
-                        .y           = 0
-                },
-                .bg_color            =
-                {
-                    .byte            =
-                    {
-                        .a           = 255,
-                        .r           = 255,
-                        .g           = 255,
-                        .b           = 255
-                    }
-                },
-                .fade_control        = DISPLAY_FADE_CONTROL_NONE,
-                .fade_speed          = 0
-            }
-        };
-#endif
-
-/* Instance structure to use this module. */
-const display_instance_t g_display0 =
-{
-    .p_ctrl        = &g_display0_ctrl,
-    .p_cfg         = (display_cfg_t *)&g_display0_cfg,
-    .p_api         = (display_api_t *)&g_display_on_glcdc
-};
+const jpeg_instance_t g_jpeg0 =
+{ .p_api = (jpeg_api_t const*) &g_jpeg_on_jpeg, .p_ctrl = &g_jpeg0_ctrl, .p_cfg = &g_jpeg0_cfg };
 dmac_instance_ctrl_t g_transfer0_ctrl;
 transfer_info_t g_transfer0_info =
-{
-    .dest_addr_mode      = TRANSFER_ADDR_MODE_FIXED,
-    .repeat_area         = TRANSFER_REPEAT_AREA_SOURCE,
-    .irq                 = TRANSFER_IRQ_END,
-    .chain_mode          = TRANSFER_CHAIN_MODE_DISABLED,
-    .src_addr_mode       = TRANSFER_ADDR_MODE_INCREMENTED,
-    .size                = TRANSFER_SIZE_4_BYTE,
-    .mode                = TRANSFER_MODE_NORMAL,
-    .p_dest              = (void *) NULL,
-    .p_src               = (void const *) NULL,
-    .num_blocks          = 0,
-    .length              = 128,
-};
+{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
+  .transfer_settings_word_b.repeat_area = TRANSFER_REPEAT_AREA_SOURCE,
+  .transfer_settings_word_b.irq = TRANSFER_IRQ_END,
+  .transfer_settings_word_b.chain_mode = TRANSFER_CHAIN_MODE_DISABLED,
+  .transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
+  .transfer_settings_word_b.size = TRANSFER_SIZE_4_BYTE,
+  .transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL,
+  .p_dest = (void*) NULL,
+  .p_src = (void const*) NULL,
+  .num_blocks = 0,
+  .length = 128, };
 const dmac_extended_cfg_t g_transfer0_extend =
-{
-    .offset              = 1,
-    .src_buffer_size     = 1,
+{ .offset = 1, .src_buffer_size = 1,
 #if defined(VECTOR_NUMBER_DMAC0_INT)
     .irq                 = VECTOR_NUMBER_DMAC0_INT,
 #else
-    .irq                 = FSP_INVALID_VECTOR,
+  .irq = FSP_INVALID_VECTOR,
 #endif
-    .ipl                 = (12),
-    .channel             = 0,
-    .p_callback          = g_sdmmc1_dmac_callback,
-    .p_context           = NULL,
-    .activation_source   = ELC_EVENT_SDHIMMC1_DMA_REQ,
-};
+  .ipl = (12),
+  .channel = 0, .p_callback = g_sdmmc1_dmac_callback, .p_context = &g_sdmmc1_ctrl, .activation_source =
+          ELC_EVENT_SDHIMMC1_DMA_REQ, };
 const transfer_cfg_t g_transfer0_cfg =
-{
-    .p_info              = &g_transfer0_info,
-    .p_extend            = &g_transfer0_extend,
-};
+{ .p_info = &g_transfer0_info, .p_extend = &g_transfer0_extend, };
 /* Instance structure to use this module. */
 const transfer_instance_t g_transfer0 =
-{
-    .p_ctrl        = &g_transfer0_ctrl,
-    .p_cfg         = &g_transfer0_cfg,
-    .p_api         = &g_transfer_on_dmac
-};
+{ .p_ctrl = &g_transfer0_ctrl, .p_cfg = &g_transfer0_cfg, .p_api = &g_transfer_on_dmac };
 #define RA_NOT_DEFINED (UINT32_MAX)
 #if (RA_NOT_DEFINED) != (1)
 
 /* If the transfer module is DMAC, define a DMAC transfer callback. */
 #include "r_dmac.h"
-extern void r_sdhi_transfer_callback(sdhi_instance_ctrl_t * p_ctrl);
+extern void r_sdhi_transfer_callback(sdhi_instance_ctrl_t *p_ctrl);
 
-void g_sdmmc1_dmac_callback (dmac_callback_args_t * p_args)
+void g_sdmmc1_dmac_callback(dmac_callback_args_t *p_args)
 {
-    r_sdhi_transfer_callback((sdhi_instance_ctrl_t *) p_args->p_context);
+    r_sdhi_transfer_callback ((sdhi_instance_ctrl_t*) p_args->p_context);
 }
 #endif
 #undef RA_NOT_DEFINED
 
 sdhi_instance_ctrl_t g_sdmmc1_ctrl;
 sdmmc_cfg_t g_sdmmc1_cfg =
-{
-    .bus_width              = SDMMC_BUS_WIDTH_4_BITS,
-    .channel                = 1,
-    .p_callback             = NULL,
-    .p_context              = NULL,
-    .block_size             = 512,
-    .card_detect            = SDMMC_CARD_DETECT_CD,
-    .write_protect          = SDMMC_WRITE_PROTECT_NONE,
+{ .bus_width = SDMMC_BUS_WIDTH_4_BITS,
+  .channel = 1,
+  .p_callback = NULL,
+  .p_context = NULL,
+  .block_size = 512,
+  .card_detect = SDMMC_CARD_DETECT_CD,
+  .write_protect = SDMMC_WRITE_PROTECT_NONE,
 
-    .p_extend               = NULL,
-    .p_lower_lvl_transfer   = &g_transfer0,
+  .p_extend = NULL,
+  .p_lower_lvl_transfer = &g_transfer0,
 
-    .access_ipl             = (12),
-    .sdio_ipl               = BSP_IRQ_DISABLED,
-    .card_ipl               = (12),
-    .dma_req_ipl            = (BSP_IRQ_DISABLED),
+  .access_ipl = (12),
+  .sdio_ipl = BSP_IRQ_DISABLED,
+  .card_ipl = (12),
+  .dma_req_ipl = (BSP_IRQ_DISABLED),
 #if defined(VECTOR_NUMBER_SDHIMMC1_ACCS)
     .access_irq             = VECTOR_NUMBER_SDHIMMC1_ACCS,
 #else
-    .access_irq             = FSP_INVALID_VECTOR,
+  .access_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_SDHIMMC1_CARD)
     .card_irq               = VECTOR_NUMBER_SDHIMMC1_CARD,
 #else
-    .card_irq               = FSP_INVALID_VECTOR,
+  .card_irq = FSP_INVALID_VECTOR,
 #endif
-    .sdio_irq               = FSP_INVALID_VECTOR,
+  .sdio_irq = FSP_INVALID_VECTOR,
 #if defined(VECTOR_NUMBER_SDHIMMC1_DMA_REQ)
     .dma_req_irq            = VECTOR_NUMBER_SDHIMMC1_DMA_REQ,
 #else
-    .dma_req_irq            = FSP_INVALID_VECTOR,
+  .dma_req_irq = FSP_INVALID_VECTOR,
 #endif
-};
+        };
 /* Instance structure to use this module. */
 const sdmmc_instance_t g_sdmmc1 =
-{
-    .p_ctrl        = &g_sdmmc1_ctrl,
-    .p_cfg         = &g_sdmmc1_cfg,
-    .p_api         = &g_sdmmc_on_sdhi
-};
-sci_uart_instance_ctrl_t     g_uart9_ctrl;
+{ .p_ctrl = &g_sdmmc1_ctrl, .p_cfg = &g_sdmmc1_cfg, .p_api = &g_sdmmc_on_sdhi };
+sci_uart_instance_ctrl_t g_uart9_ctrl;
 
-            baud_setting_t               g_uart9_baud_setting =
-            {
-                /* Baud rate calculated with 0.160% error. */ .abcse = 0, .abcs = 0, .bgdm = 1, .cks = 0, .brr = 64, .mddr = (uint8_t) 256, .brme = false
-            };
+baud_setting_t g_uart9_baud_setting =
+        {
+        /* Baud rate calculated with 0.160% error. */.semr_baudrate_bits_b.abcse = 0,
+          .semr_baudrate_bits_b.abcs = 0, .semr_baudrate_bits_b.bgdm = 1, .cks = 0, .brr = 64, .mddr = (uint8_t) 256, .semr_baudrate_bits_b.brme =
+                  false };
 
-            /** UART extended configuration for UARTonSCI HAL driver */
-            const sci_uart_extended_cfg_t g_uart9_cfg_extend =
-            {
-                .clock                = SCI_UART_CLOCK_INT,
-                .rx_edge_start          = SCI_UART_START_BIT_FALLING_EDGE,
-                .noise_cancel         = SCI_UART_NOISE_CANCELLATION_DISABLE,
-                .rx_fifo_trigger        = SCI_UART_RX_FIFO_TRIGGER_MAX,
-                .p_baud_setting         = &g_uart9_baud_setting,
-                .flow_control           = SCI_UART_FLOW_CONTROL_RTS,
-                #if 0xFF != 0xFF
+/** UART extended configuration for UARTonSCI HAL driver */
+const sci_uart_extended_cfg_t g_uart9_cfg_extend =
+{ .clock = SCI_UART_CLOCK_INT, .rx_edge_start = SCI_UART_START_BIT_FALLING_EDGE, .noise_cancel =
+          SCI_UART_NOISE_CANCELLATION_DISABLE,
+  .rx_fifo_trigger = SCI_UART_RX_FIFO_TRIGGER_MAX, .p_baud_setting = &g_uart9_baud_setting, .flow_control =
+          SCI_UART_FLOW_CONTROL_RTS,
+#if 0xFF != 0xFF
                 .flow_control_pin       = BSP_IO_PORT_FF_PIN_0xFF,
                 #else
-                .flow_control_pin       = (bsp_io_port_pin_t) UINT16_MAX,
-                #endif
-            };
+  .flow_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+#endif
+  .rs485_setting =
+  { .enable = SCI_UART_RS485_DISABLE, .polarity = SCI_UART_RS485_DE_POLARITY_HIGH,
+#if 0xFF != 0xFF
+                    .de_control_pin = BSP_IO_PORT_FF_PIN_0xFF,
+                #else
+    .de_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+#endif
+          }, };
 
-            /** UART interface configuration */
-            const uart_cfg_t g_uart9_cfg =
-            {
-                .channel             = 9,
-                .data_bits           = UART_DATA_BITS_8,
-                .parity              = UART_PARITY_OFF,
-                .stop_bits           = UART_STOP_BITS_1,
-                .p_callback          = user_uart9_callback,
-                .p_context           = NULL,
-                .p_extend            = &g_uart9_cfg_extend,
+/** UART interface configuration */
+const uart_cfg_t g_uart9_cfg =
+{ .channel = 9, .data_bits = UART_DATA_BITS_8, .parity = UART_PARITY_OFF, .stop_bits = UART_STOP_BITS_1, .p_callback =
+          user_uart9_callback,
+  .p_context = NULL, .p_extend = &g_uart9_cfg_extend,
 #define RA_NOT_DEFINED (1)
 #if (RA_NOT_DEFINED == RA_NOT_DEFINED)
-                .p_transfer_tx       = NULL,
+  .p_transfer_tx = NULL,
 #else
                 .p_transfer_tx       = &RA_NOT_DEFINED,
 #endif
 #if (RA_NOT_DEFINED == RA_NOT_DEFINED)
-                .p_transfer_rx       = NULL,
+  .p_transfer_rx = NULL,
 #else
                 .p_transfer_rx       = &RA_NOT_DEFINED,
 #endif
 #undef RA_NOT_DEFINED
-                .rxi_ipl             = (12),
-                .txi_ipl             = (12),
-                .tei_ipl             = (12),
-                .eri_ipl             = (12),
+  .rxi_ipl = (12),
+  .txi_ipl = (12), .tei_ipl = (12), .eri_ipl = (12),
 #if defined(VECTOR_NUMBER_SCI9_RXI)
                 .rxi_irq             = VECTOR_NUMBER_SCI9_RXI,
 #else
-                .rxi_irq             = FSP_INVALID_VECTOR,
+  .rxi_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_SCI9_TXI)
                 .txi_irq             = VECTOR_NUMBER_SCI9_TXI,
 #else
-                .txi_irq             = FSP_INVALID_VECTOR,
+  .txi_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_SCI9_TEI)
                 .tei_irq             = VECTOR_NUMBER_SCI9_TEI,
 #else
-                .tei_irq             = FSP_INVALID_VECTOR,
+  .tei_irq = FSP_INVALID_VECTOR,
 #endif
 #if defined(VECTOR_NUMBER_SCI9_ERI)
                 .eri_irq             = VECTOR_NUMBER_SCI9_ERI,
 #else
-                .eri_irq             = FSP_INVALID_VECTOR,
+  .eri_irq = FSP_INVALID_VECTOR,
 #endif
-            };
+        };
 
 /* Instance structure to use this module. */
 const uart_instance_t g_uart9 =
+{ .p_ctrl = &g_uart9_ctrl, .p_cfg = &g_uart9_cfg, .p_api = &g_uart_on_sci };
+void g_hal_init(void)
 {
-    .p_ctrl        = &g_uart9_ctrl,
-    .p_cfg         = &g_uart9_cfg,
-    .p_api         = &g_uart_on_sci
-};
-void g_hal_init(void) {
-g_common_init();
+    g_common_init ();
 }

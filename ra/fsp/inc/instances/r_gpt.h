@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -46,12 +46,20 @@ FSP_HEADER
 /** Input/Output pins, used to select which duty cycle to update in R_GPT_DutyCycleSet(). */
 typedef enum e_gpt_io_pin
 {
-    GPT_IO_PIN_GTIOCA            = 0,  ///< GTIOCA
-    GPT_IO_PIN_GTIOCB            = 1,  ///< GTIOCB
-    GPT_IO_PIN_GTIOCA_AND_GTIOCB = 2,  ///< GTIOCA and GTIOCB
-    GPT_IO_PIN_TROUGH            = 4,  ///< Used in @ref R_GPT_DutyCycleSet when Triangle-wave PWM Mode 3 is selected.
-    GPT_IO_PIN_CREST             = 8,  ///< Used in @ref R_GPT_DutyCycleSet when Triangle-wave PWM Mode 3 is selected.
+    GPT_IO_PIN_GTIOCA                 = 0, ///< GTIOCA
+    GPT_IO_PIN_GTIOCB                 = 1, ///< GTIOCB
+    GPT_IO_PIN_GTIOCA_AND_GTIOCB      = 2, ///< GTIOCA and GTIOCB
+    GPT_IO_PIN_TROUGH                 = 4, ///< Used in @ref R_GPT_DutyCycleSet when Triangle-wave PWM Mode 3 is selected.
+    GPT_IO_PIN_CREST                  = 8, ///< Used in @ref R_GPT_DutyCycleSet when Triangle-wave PWM Mode 3 is selected.
+    GPT_IO_PIN_ONE_SHOT_LEADING_EDGE  = 4, ///< Used in @ref R_GPT_DutyCycleSet to set GTCCRC and GTCCRE registers when One-Shot Pulse mode is selected.
+    GPT_IO_PIN_ONE_SHOT_TRAILING_EDGE = 8, ///< Used in @ref R_GPT_DutyCycleSet to set GTCCRD and GTCCRF registers when One-Shot Pulse mode is selected.
 } gpt_io_pin_t;
+
+/** Forced buffer push operation used in One-Sot Pulse mode with R_GPT_DutyCycleSet(). */
+typedef enum e_gpt_buffer_force_push
+{
+    GPT_BUFFER_FORCE_PUSH = 64,        ///< Used in @ref R_GPT_DutyCycleSet to force push the data from GTCCRn registers to temporary buffer A or B when One-Shot Pulse mode is selected.
+} gpt_buffer_force_push;
 
 /** Level of GPT pin */
 typedef enum e_gpt_pin_level
@@ -351,15 +359,15 @@ typedef struct st_gpt_extended_pwm_cfg
     gpt_interrupt_skip_source_t interrupt_skip_source;  ///< Interrupt source to count for interrupt skipping
     gpt_interrupt_skip_count_t  interrupt_skip_count;   ///< Number of interrupts to skip between events
     gpt_interrupt_skip_adc_t    interrupt_skip_adc;     ///< ADC events to skip when interrupt skipping is enabled
-    gpt_gtioc_disable_t         gtioca_disable_setting; ///< DEPRECATED - Select how to configure GTIOCA when output is disabled
-    gpt_gtioc_disable_t         gtiocb_disable_setting; ///< DEPRECATED - Select how to configure GTIOCB when output is disabled
+    gpt_gtioc_disable_t         gtioca_disable_setting; ///< Select how to configure GTIOCA when output is disabled
+    gpt_gtioc_disable_t         gtiocb_disable_setting; ///< Select how to configure GTIOCB when output is disabled
 } gpt_extended_pwm_cfg_t;
 
 /** GPT extension configures the output pins for GPT. */
 typedef struct st_gpt_extended_cfg
 {
-    gpt_output_pin_t gtioca;           ///< DEPRECATED - Configuration for GPT I/O pin A
-    gpt_output_pin_t gtiocb;           ///< DEPRECATED - Configuration for GPT I/O pin B
+    gpt_output_pin_t gtioca;           ///< Configuration for GPT I/O pin A
+    gpt_output_pin_t gtiocb;           ///< Configuration for GPT I/O pin B
     gpt_source_t     start_source;     ///< Event sources that trigger the timer to start
     gpt_source_t     stop_source;      ///< Event sources that trigger the timer to stop
     gpt_source_t     clear_source;     ///< Event sources that trigger the timer to clear
@@ -374,10 +382,10 @@ typedef struct st_gpt_extended_cfg
      * and count_down_source, then the timer count source is PCLK.  */
     gpt_source_t count_down_source;
 
-    /* Debounce filter for GTIOCxA input signal pin (DEPRECATED). */
+    /* Debounce filter for GTIOCxA input signal pin. */
     gpt_capture_filter_t capture_filter_gtioca;
 
-    /* Debounce filter for GTIOCxB input signal pin (DEPRECATED). */
+    /* Debounce filter for GTIOCxB input signal pin. */
     gpt_capture_filter_t capture_filter_gtiocb;
 
     uint8_t   capture_a_ipl;                      ///< Capture A interrupt priority
@@ -426,7 +434,7 @@ fsp_err_t R_GPT_CallbackSet(timer_ctrl_t * const          p_api_ctrl,
                             void const * const            p_context,
                             timer_callback_args_t * const p_callback_memory);
 fsp_err_t R_GPT_Close(timer_ctrl_t * const p_ctrl);
-fsp_err_t R_GPT_PwmOutputDelayInitialize();
+fsp_err_t R_GPT_PwmOutputDelayInitialize(void);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup GPT)

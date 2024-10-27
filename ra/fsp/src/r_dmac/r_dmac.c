@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2021] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
+ * Copyright [2020-2024] Renesas Electronics Corporation and/or its affiliates.  All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics America Inc. and may only be used with products
  * of Renesas Electronics Corp. and its affiliates ("Renesas").  No other uses are authorized.  Renesas products are
@@ -97,7 +97,7 @@ typedef struct st_dmac_callback
     /** Callback for transfer end interrupt. Set to NULL for no CPU interrupt. */
     void (* p_callback)(dmac_callback_args_t * cb_data);
 
-    /** Placeholder for user data.  Passed to the user p_callback in ::dmac_callback_args_t. */
+    /** Placeholder for user data.  Passed to the user p_callback in ::transfer_callback_args_t. */
     void const * p_context;
 } dmac_callback_t;
 
@@ -112,7 +112,7 @@ static void      r_dmac_config_transfer_info(dmac_instance_ctrl_t * p_ctrl, tran
 
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
 static fsp_err_t r_dma_open_parameter_checking(dmac_instance_ctrl_t * const p_ctrl, transfer_cfg_t const * const p_cfg);
-static fsp_err_t r_dmac_info_paramter_checking(transfer_info_t const * const p_info);
+static fsp_err_t r_dmac_reconfigure_paramter_checking(transfer_info_t const * const p_info);
 static fsp_err_t r_dmac_enable_parameter_checking(dmac_instance_ctrl_t * const p_ctrl);
 
 #endif
@@ -136,6 +136,8 @@ const transfer_api_t g_transfer_on_dmac =
     .softwareStop  = R_DMAC_SoftwareStop,
     .enable        = R_DMAC_Enable,
     .disable       = R_DMAC_Disable,
+    .reload        = R_DMAC_Reload,
+    .callbackSet   = R_DMAC_CallbackSet,
     .close         = R_DMAC_Close,
 };
 
@@ -171,6 +173,11 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
     p_ctrl->p_cfg = p_cfg;
     p_ctrl->p_reg = DMAC_PRV_REG(p_extend->channel);
 
+    /* Set callback and context pointers, if configured */
+    p_ctrl->p_callback        = p_extend->p_callback;
+    p_ctrl->p_context         = p_extend->p_context;
+    p_ctrl->p_callback_memory = NULL;
+
     /* Enable DMAC Operation. */
     R_BSP_MODULE_START(FSP_IP_DMAC, p_extend->channel);
 
@@ -201,7 +208,7 @@ fsp_err_t R_DMAC_Reconfigure (transfer_ctrl_t * const p_api_ctrl, transfer_info_
 #if DMAC_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
     FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
-    err = r_dmac_info_paramter_checking(p_info);
+    err = r_dmac_reconfigure_paramter_checking(p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #endif
 
@@ -387,6 +394,53 @@ fsp_err_t R_DMAC_InfoGet (transfer_ctrl_t * const p_api_ctrl, transfer_propertie
 }
 
 /*******************************************************************************************************************//**
+ * To update next transfer information without interruption during transfer.
+ *
+ * @retval FSP_ERR_UNSUPPORTED        This feature is not supported.
+ **********************************************************************************************************************/
+fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
+                         void const            * p_src,
+                         void                  * p_dest,
+                         uint32_t const          num_transfers)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+    FSP_PARAMETER_NOT_USED(p_src);
+    FSP_PARAMETER_NOT_USED(p_dest);
+    FSP_PARAMETER_NOT_USED(num_transfers);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Updates the user callback with the option to provide memory for the callback argument structure.
+ *
+ * @retval  FSP_SUCCESS                  Callback updated successfully.
+ * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.
+ * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
+ **********************************************************************************************************************/
+fsp_err_t R_DMAC_CallbackSet (transfer_ctrl_t * const       p_api_ctrl,
+                              void (                      * p_callback)(dmac_callback_args_t *),
+                              void const * const            p_context,
+                              dmac_callback_args_t * const  p_callback_memory)
+{
+    FSP_PARAMETER_NOT_USED(p_callback_memory);
+
+    dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) p_api_ctrl;
+
+#if DMAC_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(NULL != p_ctrl);
+    FSP_ASSERT(p_callback);
+    FSP_ERROR_RETURN(p_ctrl->open == DMAC_ID, FSP_ERR_NOT_OPEN);
+#endif
+
+    p_ctrl->p_callback        = p_callback;
+    p_ctrl->p_context         = p_context;
+
+    return FSP_SUCCESS;
+}
+
+
+/*******************************************************************************************************************//**
  * Disable transfer and clean up internal data. Implements @ref transfer_api_t::close.
  *
  * @retval FSP_SUCCESS           Successful close.
@@ -404,8 +458,12 @@ fsp_err_t R_DMAC_Close (transfer_ctrl_t * const p_api_ctrl)
     dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
 
     /* Disable DMAC transfers on this channel. */
+#if !BSP_FEATURE_DMAC_HAS_DELSR
     R_ICU->DELSR[p_extend->channel] = ELC_EVENT_NONE;
-    p_ctrl->p_reg->DMCNT            = 0;
+#else
+    R_DMA->DELSR[p_extend->channel] = ELC_EVENT_NONE;
+#endif
+    p_ctrl->p_reg->DMCNT = 0;
 
     if (NULL != p_extend->p_callback)
     {
@@ -459,11 +517,20 @@ static void r_dmac_prv_disable (dmac_instance_ctrl_t * p_ctrl)
 
     /* Disable the transfers. Reference Figure 17.12  "Register setting procedure" in the RA6M3 Hardware manual
      * R01UH0886EJ0100. */
+#if !BSP_FEATURE_DMAC_HAS_DELSR
     R_ICU->DELSR[p_extend->channel] = ELC_EVENT_NONE;
-    p_ctrl->p_reg->DMCNT            = 0;
+#else
+    R_DMA->DELSR[p_extend->channel] = ELC_EVENT_NONE;
+#endif
+
+    p_ctrl->p_reg->DMCNT = 0;
 
     /* Configure the activation source. */
+#if !BSP_FEATURE_DMAC_HAS_DELSR
     R_ICU->DELSR[p_extend->channel] = p_extend->activation_source;
+#else
+    R_DMA->DELSR[p_extend->channel] = p_extend->activation_source;
+#endif
 
     /* Disable software start. */
     p_ctrl->p_reg->DMREQ = 0;
@@ -489,20 +556,21 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
     r_dmac_prv_disable(p_ctrl);
 
     /* Configure the Transfer Data Size (1,2,4) bytes. */
-    dmtmd |= (uint32_t) (p_info->size << DMAC_PRV_DMTMD_SZ_OFFSET);
+    dmtmd |= (uint32_t) (p_info->transfer_settings_word_b.size << DMAC_PRV_DMTMD_SZ_OFFSET);
 
     /* Configure source and destination address mode. */
-    dmamd |= (uint32_t) (p_info->src_addr_mode << DMAC_PRV_DMAMD_SM_OFFSET);
-    dmamd |= (uint32_t) (p_info->dest_addr_mode << DMAC_PRV_DMAMD_DM_OFFSET);
+    dmamd |= (uint32_t) (p_info->transfer_settings_word_b.src_addr_mode << DMAC_PRV_DMAMD_SM_OFFSET);
+    dmamd |= (uint32_t) (p_info->transfer_settings_word_b.dest_addr_mode << DMAC_PRV_DMAMD_DM_OFFSET);
 
     /* Configure the transfer mode. */
-    dmtmd |= (uint32_t) p_info->mode << DMAC_PRV_DMTMD_MD_OFFSET;
+    dmtmd |= (uint32_t) p_info->transfer_settings_word_b.mode << DMAC_PRV_DMTMD_MD_OFFSET;
 
     /* Configure the transfer count. */
     dmcra = p_info->length;
 
-    if ((TRANSFER_MODE_BLOCK == p_info->mode) || (TRANSFER_MODE_REPEAT == p_info->mode) ||
-        (TRANSFER_MODE_REPEAT_BLOCK == p_info->mode))
+    if ((TRANSFER_MODE_BLOCK == p_info->transfer_settings_word_b.mode) ||
+        (TRANSFER_MODE_REPEAT == p_info->transfer_settings_word_b.mode) ||
+        (TRANSFER_MODE_REPEAT_BLOCK == p_info->transfer_settings_word_b.mode))
     {
         /* Configure the reload count. */
         dmcra |= dmcra << DMAC_PRV_DMCRA_HIGH_OFFSET;
@@ -511,10 +579,11 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
         /* Configure the block count. */
         dmcrb = p_info->num_blocks;
 
-        if ((TRANSFER_MODE_BLOCK == p_info->mode) || (TRANSFER_MODE_REPEAT == p_info->mode))
+        if ((TRANSFER_MODE_BLOCK == p_info->transfer_settings_word_b.mode) ||
+            (TRANSFER_MODE_REPEAT == p_info->transfer_settings_word_b.mode))
         {
             /* Configure the repeat area */
-            dmtmd |= (uint32_t) (p_info->repeat_area << DMAC_PRV_DMTMD_DTS_OFFSET);
+            dmtmd |= (uint32_t) (p_info->transfer_settings_word_b.repeat_area << DMAC_PRV_DMTMD_DTS_OFFSET);
         }
     }
     else                               /* TRANSFER_MODE_NORMAL */
@@ -529,27 +598,21 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
         dmtmd |= 1U << DMAC_PRV_DMTMD_DCTG_OFFSET;
     }
 
-    if (NULL != p_extend->p_callback)
+    if (NULL != p_ctrl->p_callback)
     {
         /* Enable transfer end interrupt requests. */
         dmint |= DMAC_PRV_DMINT_DTIE_MASK;
 
-        if (TRANSFER_IRQ_EACH == p_info->irq)
+        /* Enable the transfer end escape interrupt requests.
+         * Repeat size end and Extended Repeat area overflow requests are not
+         * used with Repeat-Block mode. Reference section 16.2.9 "DMINT : DMA Interrupt Setting Register"
+         * of RA6M4 hardware manual R01UH0890EJ0110. */
+        if ((TRANSFER_IRQ_EACH == p_info->transfer_settings_word_b.irq) &&
+            (TRANSFER_MODE_REPEAT_BLOCK != p_info->transfer_settings_word_b.mode))
         {
-            if (TRANSFER_MODE_REPEAT_BLOCK == p_info->mode)
-            {
-                /* Enable the transfer end escape interrupt requests.
-                 * Repeat size end and Extended Repeat area overflow requests are not
-                 * used with Repeat-Block mode. Reference section 16.2.9 "DMINT : DMA Interrupt Setting Register"
-                 * of RA6M4 hardware manual R01UH0890EJ0110. */
-                dmint |= DMAC_PRV_DMINT_ESIE_MASK;
-            }
-            else
-            {
-                /* Enable the transfer end escape interrupt requests
-                 * (Repeat size end and Extended Repeat area overflow requests). */
-                dmint |= (DMAC_PRV_DMINT_RPTIE_MASK | DMAC_PRV_DMINT_ESIE_MASK);
-            }
+            /* Enable the transfer end escape interrupt requests
+             * (Repeat size end and Extended Repeat area overflow requests). */
+            dmint |= (DMAC_PRV_DMINT_RPTIE_MASK | DMAC_PRV_DMINT_ESIE_MASK);
         }
 
         /* Enable the IRQ in the NVIC. */
@@ -560,14 +623,14 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
     uint32_t dmsbs = 0;
     uint32_t dmdbs = 0;
 
-    if (TRANSFER_MODE_REPEAT_BLOCK == p_info->mode)
+    if (TRANSFER_MODE_REPEAT_BLOCK == p_info->transfer_settings_word_b.mode)
     {
         uint16_t num_of_blocks = p_info->num_blocks;
         uint16_t size_of_block;
         size_of_block = p_info->length;
         uint16_t src_buffer_size;
         uint16_t dest_buffer_size;
-        if (TRANSFER_ADDR_MODE_OFFSET == p_info->src_addr_mode)
+        if (TRANSFER_ADDR_MODE_OFFSET == p_info->transfer_settings_word_b.src_addr_mode)
         {
             src_buffer_size = num_of_blocks;
             dmamd          |= R_DMAC0_DMAMD_SADR_Msk;
@@ -577,7 +640,7 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
             src_buffer_size = p_extend->src_buffer_size;
         }
 
-        if (TRANSFER_ADDR_MODE_OFFSET == p_info->dest_addr_mode)
+        if (TRANSFER_ADDR_MODE_OFFSET == p_info->transfer_settings_word_b.dest_addr_mode)
         {
             dest_buffer_size = num_of_blocks;
             dmamd           |= R_DMAC0_DMAMD_DADR_Msk;
@@ -641,7 +704,7 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
         FSP_ERROR_RETURN(p_extend->irq >= 0, FSP_ERR_IRQ_BSP_DISABLED);
     }
 
-    fsp_err_t err = r_dmac_info_paramter_checking(p_cfg->p_info);
+    fsp_err_t err = r_dmac_reconfigure_paramter_checking(p_cfg->p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
     return FSP_SUCCESS;
@@ -655,14 +718,17 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
  * @retval FSP_SUCCESS              The transfer info is valid.
  * @retval FSP_ERR_ASSERTION        A transfer info setting is invalid.
  **********************************************************************************************************************/
-static fsp_err_t r_dmac_info_paramter_checking (transfer_info_t const * const p_info)
+static fsp_err_t r_dmac_reconfigure_paramter_checking (transfer_info_t const * const p_info)
 {
     FSP_ASSERT(p_info != NULL);
 
-    if (TRANSFER_MODE_NORMAL != p_info->mode)
+    if (TRANSFER_MODE_NORMAL != p_info->transfer_settings_word_b.mode)
     {
         FSP_ASSERT(p_info->length <= DMAC_REPEAT_BLOCK_MAX_LENGTH);
     }
+
+    FSP_ASSERT((TRANSFER_MODE_REPEAT_BLOCK != p_info->transfer_settings_word_b.mode) ||
+               (TRANSFER_IRQ_EACH != p_info->transfer_settings_word_b.irq));
 
     return FSP_SUCCESS;
 }
@@ -714,13 +780,14 @@ void dmac_int_isr (void)
     /* Clear IRQ to make sure it doesn't fire again after exiting */
     R_BSP_IrqStatusClear(irq);
 
-    dmac_instance_ctrl_t * p_ctrl   = R_FSP_IsrContextGet(irq);
-    dmac_extended_cfg_t  * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    dmac_instance_ctrl_t * p_ctrl   = (dmac_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+
+    /* Call the callback routine if one is available */
+    dmac_callback_args_t args;
+    args.p_context = p_ctrl->p_context;
 
     /* Call user callback */
-    dmac_callback_args_t args;
-    args.p_context = p_extend->p_context;
-    p_extend->p_callback(&args);
+    p_ctrl->p_callback(&args);
 
     /* Transfers are disabled during the interrupt if an interrupt is requested after each block or after each repeat
      * length. If not all transfers are complete, reenable transfer here. See section 17.4.2 Transfer End by Repeat
