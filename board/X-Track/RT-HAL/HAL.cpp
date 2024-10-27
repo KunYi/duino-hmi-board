@@ -2,6 +2,7 @@
 
 void HAL::HAL_Init()
 {
+    Clock_Init();
     Buzz_init();
     Audio_Init();
     GPS_Init();
