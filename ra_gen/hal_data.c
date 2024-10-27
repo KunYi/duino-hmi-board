@@ -80,7 +80,7 @@ const rtc_error_adjustment_cfg_t g_rtc_err_cfg =
   .adjustment_type = RTC_ERROR_ADJUSTMENT_NONE,
   .adjustment_value = 0, };
 const rtc_cfg_t g_rtc_cfg =
-{ .clock_source = RTC_CLOCK_SOURCE_LOCO, .freq_compare_value = 255, .p_err_cfg = &g_rtc_err_cfg, .p_callback =
+{ .clock_source = RTC_CLOCK_SOURCE_SUBCLK, .freq_compare_value = 255, .p_err_cfg = &g_rtc_err_cfg, .p_callback =
           rtc_callback,
   .p_context = NULL, .p_extend = NULL, .alarm_ipl = (2), .periodic_ipl = (BSP_IRQ_DISABLED), .carry_ipl = (12),
 #if defined(VECTOR_NUMBER_RTC_ALARM)
