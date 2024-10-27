@@ -14,7 +14,7 @@
 #include "string.h"
 #endif
 
-#if defined(__RTTHREAD__) && defined(BSP_USING_ONCHIP_RTC)
+#if defined(__RTTHREAD__) && (defined(RT_USING_SOFT_RTC) || defined(BSP_USING_ONCHIP_RTC))
 
 #define BUILD_MONTH_IS_JAN (__DATE__[0] == 'J' && __DATE__[1] == 'a')
 #define BUILD_MONTH_IS_FEB (__DATE__[0] == 'F')
@@ -65,41 +65,18 @@
     (((__TIME__[6] - '0') * 10) + \
      (__TIME__[7] - '0'))
 
-/* set rtc init time to compile time */
-#define SET_COMPILE_TIME() do { \
-    ret = set_date(BUILD_YEAR, BUILD_MONTH, BUILD_DAY); \
-    if (ret != RT_EOK) { \
-        rt_kprintf("set RTC date failed\n"); \
-    } \
-    ret = set_time(BUILD_HOUR, BUILD_MIN, BUILD_SEC); \
-    if (ret != RT_EOK) { \
-        rt_kprintf("set RTC time failed\n"); \
-    } \
-} while(0)
-
-#define RTC_NAME "rtc" /* rt_hw_rtc_register("rtc") in rtc_drv.c*/
-
 void HAL::Clock_Init() {
-    rt_err_t ret = RT_EOK;
     time_t now;
-    rt_device_t device = RT_NULL;
-
-    /* find rtc device */
-    device = rt_device_find(RTC_NAME);
-    if (!device)
-    {
-        rt_kprintf("find %s failed!\n", RTC_NAME);
-        return;
-    }
-    /* initial RTC device */
-    if(rt_device_open(device, 0) != RT_EOK)
-    {
-        rt_kprintf("open %s failed!\n", RTC_NAME);
-        return;
-    }
-
-    SET_COMPILE_TIME();
-
+    /* set time and date */
+    struct tm tm_new = {0};
+    tm_new.tm_year = BUILD_YEAR - 1900;
+    tm_new.tm_mon = BUILD_MONTH - 1; /* .tm_min's range is [0-11] */
+    tm_new.tm_mday = BUILD_DAY;
+    tm_new.tm_hour = BUILD_HOUR;
+    tm_new.tm_min = BUILD_MIN;
+    tm_new.tm_sec = BUILD_SEC;
+    now = mktime(&tm_new);
+    set_timestamp(now);
     /* get time  */
     now = time(RT_NULL);
     LOG_I("RTC device init success,now time is %s\n", ctime(&now));
@@ -118,7 +95,6 @@ void HAL::Clock_GetInfo(Clock_Info_t* info)
     info->hour = t->tm_hour;
     info->minute = t->tm_min;
     info->second = t->tm_sec;
-    info->millisecond = t->tm_sec;
 }
 #else
 void HAL::Clock_Init() {
