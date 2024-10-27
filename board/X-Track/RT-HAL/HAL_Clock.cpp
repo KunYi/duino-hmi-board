@@ -2,10 +2,14 @@
 #include <time.h>
 #include <stdio.h>
 
+#ifdef __RTTHREAD__
+#include "rtconfig.h"
+#endif
+
 void HAL::Clock_GetInfo(Clock_Info_t* info)
 {
 
-#if 0
+#ifdef BSP_USING_ONCHIP_RTC
     struct tm* t;
     time_t tt;
     time(&tt);
