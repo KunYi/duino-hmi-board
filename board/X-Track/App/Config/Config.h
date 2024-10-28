@@ -41,13 +41,17 @@
 #  define CONFIG_GPS_REFR_PERIOD              10 // ms
 #endif
 
-#define CONFIG_GPS_LONGITUDE_DEFAULT          116.391332f
-#define CONFIG_GPS_LATITUDE_DEFAULT           39.907415f
+/* Beijing */
+// #define CONFIG_GPS_LONGITUDE_DEFAULT          116.391332f
+// #define CONFIG_GPS_LATITUDE_DEFAULT           39.907415f
+/* New Taipei */
+#define CONFIG_GPS_LONGITUDE_DEFAULT          121.520650471f
+#define CONFIG_GPS_LATITUDE_DEFAULT           24.9764671269f
 
 #define CONFIG_TRACK_FILTER_OFFSET_THRESHOLD  2 // pixel
 #define CONFIG_TRACK_RECORD_FILE_DIR_NAME     "Track"
 
-#define CONFIG_MAP_USE_WGS84_DEFAULT          false
+#define CONFIG_MAP_USE_WGS84_DEFAULT          true
 #define CONFIG_MAP_DIR_PATH_DEFAULT           "/MAP"
 
 #ifndef CONFIG_MAP_EXT_NAME_DEFAULT
