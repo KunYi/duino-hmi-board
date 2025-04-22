@@ -7,6 +7,21 @@ Migration [X-Track](https://github.com/FASTSHIFT/X-TRACK) to RT-Thread with RTdu
 - [RTOS: RT-Thread v5.1.0](https://github.com/RT-Thread/rt-thread)
 - [LVGL: v8.3.11](https://github.com/lvgl/lvgl)
 - Build environment: Ubuntu 22.04 with arm-none-eabi-gcc toolchain and [Env tools of RT-Thread](https://github.com/RT-Thread/env)
+
+### For 🪟 Windows Users: Symbolic Link Setup
+
+This project relies on symbolic links (e.g., board/X-Track/App/lvgl) for referencing third-party libraries such as LVGL. Windows users must manually create these symbolic links to ensure successful builds and avoid duplicated compilation.
+🔧 Setup Instructions (Run Once)
+
+    Open Command Prompt as Administrator
+    (Search for cmd → Right-click → “Run as administrator”)
+
+    Run the following command to create the symbolic link:
+
+```cmd
+mklink /D board\X-Track\App\lvgl packages\LVGL-v8.3.11
+```
+
 ### Build Steps
 
 ```bash
